@@ -25,6 +25,7 @@
     <a href="../santos/" class="active">Santos</a>
     <a href="../oracoes/">Orações</a>
   </div>
+  <div id="auth-widget"></div>
 </nav>
 
 <main class="wrap">
@@ -56,6 +57,7 @@
 
 <script type="module">
   import { getSantoDoDia } from '../js/devocional.js';
+  import { montarBotaoFavorito } from '../js/favorito-btn.js';
   const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
   async function carregar() {
@@ -78,14 +80,23 @@
       const card = document.createElement('div');
       card.className = 'list-card';
       card.innerHTML = `
-        <p class="tag">${parseInt(dd)} de ${MESES[parseInt(mm) - 1]}${s.titulo ? ' · ' + s.titulo : ''}</p>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+          <p class="tag">${parseInt(dd)} de ${MESES[parseInt(mm) - 1]}${s.titulo ? ' · ' + s.titulo : ''}</p>
+          <div class="fav-slot"></div>
+        </div>
         <h3>${s.nome}</h3>
         <p>${s.resumo}</p>
       `;
       lista.appendChild(card);
+      montarBotaoFavorito(card.querySelector('.fav-slot'), { tipo: 'santo', itemId: chave });
     });
   }
   carregar().catch(e => console.error('Erro ao carregar santos:', e));
+</script>
+
+<script type="module">
+  import { montarAuthWidget } from '../js/auth-widget.js';
+  montarAuthWidget(document.getElementById('auth-widget'));
 </script>
 
 </body>

@@ -25,6 +25,7 @@
     <a href="../santos/">Santos</a>
     <a href="../oracoes/">Orações</a>
   </div>
+  <div id="auth-widget"></div>
 </nav>
 
 <main class="wrap">
@@ -38,6 +39,7 @@
 <footer>Ave — devocional mariano diário</footer>
 
 <script type="module">
+  import { montarBotaoFavorito } from '../js/favorito-btn.js';
   const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
   async function carregar() {
@@ -49,14 +51,23 @@
       const card = document.createElement('div');
       card.className = 'list-card';
       card.innerHTML = `
-        <p class="tag">${t.origem} · festa em ${t.festa}</p>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+          <p class="tag">${t.origem} · festa em ${t.festa}</p>
+          <div class="fav-slot"></div>
+        </div>
         <h3>${t.nome}</h3>
         <p>${t.resumo}</p>
       `;
       lista.appendChild(card);
+      montarBotaoFavorito(card.querySelector('.fav-slot'), { tipo: 'titulo_mariano', itemId: t.id });
     });
   }
   carregar().catch(e => console.error('Erro ao carregar títulos:', e));
+</script>
+
+<script type="module">
+  import { montarAuthWidget } from '../js/auth-widget.js';
+  montarAuthWidget(document.getElementById('auth-widget'));
 </script>
 
 </body>

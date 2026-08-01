@@ -25,6 +25,7 @@
     <a href="../santos/">Santos</a>
     <a href="../oracoes/">Orações</a>
   </div>
+  <div id="auth-widget"></div>
 </nav>
 
 <main class="wrap">
@@ -92,6 +93,11 @@
     container.appendChild(secaoTodas);
   }
   carregar().catch(e => console.error('Erro ao carregar novenas:', e));
+</script>
+
+<script type="module">
+  import { montarAuthWidget } from '../js/auth-widget.js';
+  montarAuthWidget(document.getElementById('auth-widget'));
 </script>
 
 </body>

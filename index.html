@@ -25,6 +25,7 @@
     <a href="santos/">Santos</a>
     <a href="oracoes/">Orações</a>
   </div>
+  <div id="auth-widget"></div>
 </nav>
 
 <main class="wrap">
@@ -47,7 +48,9 @@
     <p class="mystery-body">—</p>
     <div class="mystery-cta">
       <a class="btn btn-primary" href="terco/">Rezar o terço completo</a>
+      <button class="btn btn-ghost" id="btn-marcar-oracao">Marquei que rezei hoje 🙏</button>
     </div>
+    <p id="streak-info" style="text-align:center; font-family:'Inter',sans-serif; font-size:.78rem; color:var(--ink-soft); opacity:.75; margin-top:14px;"></p>
   </div>
 
   <section class="section" id="novena-secao" hidden>
@@ -110,6 +113,7 @@
 
 <script type="module">
   import { getDevocionalDeHoje } from './js/devocional.js';
+  import { marcarOracaoDeHoje, getStreakAtual, getUsuarioAtual } from './js/supabase-client.js';
 
   const DIAS_SEMANA = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
@@ -156,7 +160,48 @@
     } catch (e) {
       console.error('Falha ao montar o devocional de hoje:', e);
     }
+
+    // streak de oração
+    const streakInfo = document.getElementById('streak-info');
+    const btnMarcar = document.getElementById('btn-marcar-oracao');
+
+    async function atualizarStreakInfo() {
+      const usuario = await getUsuarioAtual();
+      if (!usuario) {
+        streakInfo.textContent = 'Entre com seu e-mail pra acompanhar sua sequência de dias rezados.';
+        return;
+      }
+      const streak = await getStreakAtual();
+      const hoje = new Date().toISOString().slice(0, 10);
+      if (streak?.ultimo_dia_rezado === hoje) {
+        streakInfo.textContent = `Você já rezou hoje 🔥 ${streak.dias_seguidos} dia(s) seguidos.`;
+      } else if (streak) {
+        streakInfo.textContent = `Sua sequência: ${streak.dias_seguidos} dia(s). Marque hoje pra continuar!`;
+      } else {
+        streakInfo.textContent = '';
+      }
+    }
+    atualizarStreakInfo();
+
+    btnMarcar.addEventListener('click', async () => {
+      const usuario = await getUsuarioAtual();
+      if (!usuario) {
+        alert('Entre com seu e-mail (canto superior direito) pra acompanhar sua sequência.');
+        return;
+      }
+      try {
+        const dias = await marcarOracaoDeHoje();
+        streakInfo.textContent = `Registrado! 🔥 ${dias} dia(s) seguidos.`;
+      } catch (e) {
+        console.error(e);
+      }
+    });
   })();
+</script>
+
+<script type="module">
+  import { montarAuthWidget } from './js/auth-widget.js';
+  montarAuthWidget(document.getElementById('auth-widget'));
 </script>
 
 </body>

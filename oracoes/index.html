@@ -25,6 +25,7 @@
     <a href="../santos/">Santos</a>
     <a href="../oracoes/" class="active">Orações</a>
   </div>
+  <div id="auth-widget"></div>
 </nav>
 
 <main class="wrap">
@@ -39,6 +40,7 @@
 
 <script type="module">
   import { montarPlayer } from '../js/audio-player.js';
+  import { montarBotaoFavorito } from '../js/favorito-btn.js';
 
   async function carregar() {
     const resp = await fetch('../data/oracoes.json');
@@ -49,13 +51,17 @@
       const secao = document.createElement('section');
       secao.className = 'section';
       secao.innerHTML = `
-        <div class="section-head"><h2 class="section-title">${o.titulo}</h2></div>
+        <div class="section-head">
+          <h2 class="section-title">${o.titulo}</h2>
+          <div class="fav-slot"></div>
+        </div>
         <div class="parchment-card" style="max-width:100%; text-align:left;">
           <p style="font-family:'Crimson Pro',serif; line-height:1.8; color:var(--ink-soft);">${o.texto}</p>
           <div class="audio-slot"></div>
         </div>
       `;
       container.appendChild(secao);
+      montarBotaoFavorito(secao.querySelector('.fav-slot'), { tipo: 'oracao', itemId: o.id });
       montarPlayer(secao.querySelector('.audio-slot'), {
         audio_ele: o.audio_ele,
         audio_ela: o.audio_ela
@@ -63,6 +69,11 @@
     });
   }
   carregar().catch(e => console.error('Erro ao carregar orações:', e));
+</script>
+
+<script type="module">
+  import { montarAuthWidget } from '../js/auth-widget.js';
+  montarAuthWidget(document.getElementById('auth-widget'));
 </script>
 
 </body>
