@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santo do Dia — Ave</title>
+<meta name="description" content="O santo celebrado hoje pela Igreja, com breve biografia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="stars"></div>
+
+<nav>
+  <a class="brand" href="/">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.8 8.6 L20 9.5 L15.2 14 L16.6 20.5 L12 17 L7.4 20.5 L8.8 14 L4 9.5 L10.2 8.6 Z" fill="currentColor" opacity="0.9"/></svg>
+    Ave
+  </a>
+  <div class="nav-links">
+    <a href="/">Hoje</a>
+    <a href="/terco">Terço</a>
+    <a href="/novenas">Novenas</a>
+    <a href="/titulos">Títulos</a>
+    <a href="/santos" class="active">Santos</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <p class="eyebrow">Devocional</p>
+  <h1 class="page-title">Santo do Dia</h1>
+  <p class="page-intro">O calendário está sendo construído mês a mês. Por enquanto, agosto já está disponível.</p>
+
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">Hoje</h2>
+      <span class="section-sub" id="santo-data-hoje"></span>
+    </div>
+    <div class="saint-card" id="santo-hoje-card">
+      <div class="saint-glyph">✝</div>
+      <div class="saint-info">
+        <h3 id="santo-hoje-nome">—</h3>
+        <p id="santo-hoje-resumo">Sem registro para esta data ainda.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2 class="section-title">Calendário disponível</h2></div>
+    <div id="santos-lista"></div>
+  </section>
+</main>
+
+<footer>Ave — devocional mariano diário</footer>
+
+<script type="module">
+  import { getSantoDoDia } from '/js/devocional.js';
+  const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+  async function carregar() {
+    const resp = await fetch('/data/santos.json');
+    const dados = await resp.json();
+    const hoje = new Date();
+
+    document.getElementById('santo-data-hoje').textContent =
+      `${hoje.getDate()} de ${MESES[hoje.getMonth()]}`;
+
+    const santoHoje = getSantoDoDia(dados, hoje);
+    if (santoHoje) {
+      document.getElementById('santo-hoje-nome').textContent = santoHoje.nome;
+      document.getElementById('santo-hoje-resumo').textContent = santoHoje.resumo;
+    }
+
+    const lista = document.getElementById('santos-lista');
+    Object.entries(dados.santos).forEach(([chave, s]) => {
+      const [mm, dd] = chave.split('-');
+      const card = document.createElement('div');
+      card.className = 'list-card';
+      card.innerHTML = `
+        <p class="tag">${parseInt(dd)} de ${MESES[parseInt(mm) - 1]}${s.titulo ? ' · ' + s.titulo : ''}</p>
+        <h3>${s.nome}</h3>
+        <p>${s.resumo}</p>
+      `;
+      lista.appendChild(card);
+    });
+  }
+  carregar().catch(e => console.error('Erro ao carregar santos:', e));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+{
+  "regra_dia_semana": {
+    "1": "gozosos",
+    "2": "dolorosos",
+    "3": "gloriosos",
+    "4": "luminosos",
+    "5": "dolorosos",
+    "6": "gozosos",
+    "0": "gloriosos",
+    "_obs": "chave = Date.getDay() do JS (0=domingo ... 6=sábado)"
+  },
+  "conjuntos": {
+    "gozosos": {
+      "nome": "Mistérios Gozosos",
+      "dias": ["Segunda-feira", "Sábado"],
+      "misterios": [
+        {
+          "titulo": "1º Mistério — A Anunciação do Anjo a Maria",
+          "citacao": "Lucas 1, 26-38",
+          "contemplacao": "Contemplamos o \"sim\" de Maria ao anúncio do anjo Gabriel, e pedimos a graça da humildade para acolhermos a vontade de Deus em nossa vida."
+        },
+        {
+          "titulo": "2º Mistério — A Visitação de Maria a Isabel",
+          "citacao": "Lucas 1, 39-45",
+          "contemplacao": "Contemplamos Maria a caminho da casa de Isabel, levando Jesus consigo, e pedimos a graça da caridade fraterna."
+        },
+        {
+          "titulo": "3º Mistério — O Nascimento de Jesus",
+          "citacao": "Lucas 2, 1-7",
+          "contemplacao": "Contemplamos o nascimento do Salvador em Belém, e pedimos a graça do desapego e da pobreza de espírito."
+        },
+        {
+          "titulo": "4º Mistério — A Apresentação de Jesus no Templo",
+          "citacao": "Lucas 2, 22-38",
+          "contemplacao": "Contemplamos Maria e José oferecendo o Menino Jesus a Deus, e pedimos a graça da obediência e da pureza."
+        },
+        {
+          "titulo": "5º Mistério — O Encontro do Menino Jesus no Templo",
+          "citacao": "Lucas 2, 41-52",
+          "contemplacao": "Contemplamos Jesus encontrado entre os doutores da lei, e pedimos a graça de buscarmos sempre a Deus."
+        }
+      ]
+    },
+    "dolorosos": {
+      "nome": "Mistérios Dolorosos",
+      "dias": ["Terça-feira", "Sexta-feira"],
+      "misterios": [
+        {
+          "titulo": "1º Mistério — A Agonia de Jesus no Horto",
+          "citacao": "Lucas 22, 39-46",
+          "contemplacao": "Contemplamos a angústia de Jesus em Getsêmani, e pedimos a graça do abandono confiante à vontade do Pai."
+        },
+        {
+          "titulo": "2º Mistério — A Flagelação de Jesus",
+          "citacao": "João 19, 1",
+          "contemplacao": "Contemplamos Jesus açoitado por nós, e pedimos a graça da mortificação dos sentidos."
+        },
+        {
+          "titulo": "3º Mistério — A Coroação de Espinhos",
+          "citacao": "Mateus 27, 27-31",
+          "contemplacao": "Contemplamos Jesus coroado de espinhos e escarnecido, e pedimos a graça de vencer o orgulho e a vaidade."
+        },
+        {
+          "titulo": "4º Mistério — Jesus Carrega a Cruz",
+          "citacao": "João 19, 17",
+          "contemplacao": "Contemplamos Jesus caminhando ao Calvário com a cruz, e pedimos a graça da paciência nas provações."
+        },
+        {
+          "titulo": "5º Mistério — A Crucificação e Morte de Jesus",
+          "citacao": "João 19, 18-30",
+          "contemplacao": "Contemplamos Jesus morrendo na cruz por amor a nós, e pedimos a graça do arrependimento dos pecados."
+        }
+      ]
+    },
+    "gloriosos": {
+      "nome": "Mistérios Gloriosos",
+      "dias": ["Quarta-feira", "Domingo"],
+      "misterios": [
+        {
+          "titulo": "1º Mistério — A Ressurreição de Jesus",
+          "citacao": "Mateus 28, 1-10",
+          "contemplacao": "Contemplamos Jesus vencendo a morte, e pedimos a graça da fé viva."
+        },
+        {
+          "titulo": "2º Mistério — A Ascensão de Jesus ao Céu",
+          "citacao": "Atos 1, 6-11",
+          "contemplacao": "Contemplamos Jesus subindo ao Céu, e pedimos a graça da esperança."
+        },
+        {
+          "titulo": "3º Mistério — A Vinda do Espírito Santo",
+          "citacao": "Atos 2, 1-4",
+          "contemplacao": "Contemplamos o Espírito Santo descendo sobre os apóstolos e Maria, e pedimos a graça da sabedoria."
+        },
+        {
+          "titulo": "4º Mistério — A Assunção de Nossa Senhora ao Céu",
+          "citacao": "Tradição da Igreja",
+          "contemplacao": "Contemplamos Maria elevada ao Céu em corpo e alma, e pedimos a graça de morrermos em estado de graça."
+        },
+        {
+          "titulo": "5º Mistério — A Coroação de Nossa Senhora",
+          "citacao": "Tradição da Igreja",
+          "contemplacao": "Contemplamos Maria coroada Rainha do Céu e da Terra, e pedimos a graça de sermos fiéis a Jesus por Maria."
+        }
+      ]
+    },
+    "luminosos": {
+      "nome": "Mistérios Luminosos",
+      "dias": ["Quinta-feira"],
+      "misterios": [
+        {
+          "titulo": "1º Mistério — O Batismo de Jesus no Jordão",
+          "citacao": "Mateus 3, 13-17",
+          "contemplacao": "Contemplamos Jesus batizado por João, e pedimos a graça de vivermos como filhos de Deus."
+        },
+        {
+          "titulo": "2º Mistério — As Bodas de Caná",
+          "citacao": "João 2, 1-11",
+          "contemplacao": "Contemplamos o primeiro milagre de Jesus por intercessão de Maria, e pedimos a graça da confiança em Maria."
+        },
+        {
+          "titulo": "3º Mistério — O Anúncio do Reino de Deus",
+          "citacao": "Marcos 1, 14-15",
+          "contemplacao": "Contemplamos Jesus anunciando a conversão e o Reino, e pedimos a graça da conversão do coração."
+        },
+        {
+          "titulo": "4º Mistério — A Transfiguração de Jesus",
+          "citacao": "Mateus 17, 1-8",
+          "contemplacao": "Contemplamos Jesus transfigurado no monte Tabor, e pedimos a graça de contemplar a glória de Deus."
+        },
+        {
+          "titulo": "5º Mistério — A Instituição da Eucaristia",
+          "citacao": "Mateus 26, 26-28",
+          "contemplacao": "Contemplamos Jesus se dando a nós na Eucaristia, e pedimos a graça do amor à Santa Missa."
+        }
+      ]
+    }
+  }
+}

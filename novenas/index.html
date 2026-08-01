@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novenas Marianas — Ave</title>
+<meta name="description" content="Novenas de Nossa Senhora, com intenção diária calculada automaticamente.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="stars"></div>
+
+<nav>
+  <a class="brand" href="/">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.8 8.6 L20 9.5 L15.2 14 L16.6 20.5 L12 17 L7.4 20.5 L8.8 14 L4 9.5 L10.2 8.6 Z" fill="currentColor" opacity="0.9"/></svg>
+    Ave
+  </a>
+  <div class="nav-links">
+    <a href="/">Hoje</a>
+    <a href="/terco">Terço</a>
+    <a href="/novenas" class="active">Novenas</a>
+    <a href="/titulos">Títulos</a>
+    <a href="/santos">Santos</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <p class="eyebrow">Devocional</p>
+  <h1 class="page-title">Novenas Marianas</h1>
+  <p class="page-intro">Nove dias de oração preparando cada grande festa de Nossa Senhora. Quando uma novena está em andamento, ela aparece com o dia atual destacado.</p>
+
+  <div id="novenas-lista"></div>
+</main>
+
+<footer>Ave — devocional mariano diário</footer>
+
+<script type="module">
+  import { getNovenaAtiva, getProximaFesta } from '/js/devocional.js';
+
+  const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+  async function carregar() {
+    const resp = await fetch('/data/novenas.json');
+    const dados = await resp.json();
+    const hoje = new Date();
+    const ativa = getNovenaAtiva(dados, hoje);
+    const proxima = getProximaFesta(dados, hoje);
+
+    const container = document.getElementById('novenas-lista');
+
+    if (ativa) {
+      const bloco = document.createElement('div');
+      bloco.className = 'novena-card';
+      bloco.style.marginBottom = '48px';
+      bloco.innerHTML = `
+        <div class="novena-ring"><span>${ativa.diaAtual}/9</span></div>
+        <div class="novena-info">
+          <h3>${ativa.titulo} — em andamento</h3>
+          <p>${ativa.intencaoDoDia}</p>
+        </div>
+      `;
+      container.appendChild(bloco);
+    } else if (proxima) {
+      const aviso = document.createElement('p');
+      aviso.className = 'section-sub';
+      aviso.style.marginBottom = '40px';
+      aviso.style.display = 'block';
+      aviso.textContent = `Nenhuma novena em andamento agora. A próxima começa faltando 9 dias para ${proxima.festa.nome} (${proxima.festa.dia} de ${MESES[proxima.festa.mes - 1]}).`;
+      container.appendChild(aviso);
+    }
+
+    const secaoTodas = document.createElement('section');
+    secaoTodas.className = 'section';
+    secaoTodas.innerHTML = `<div class="section-head"><h2 class="section-title">Todas as novenas</h2></div>`;
+    const listaEl = document.createElement('div');
+
+    dados.novenas.forEach(n => {
+      const card = document.createElement('div');
+      card.className = 'list-card';
+      card.innerHTML = `
+        <p class="tag">${n.festa.dia} de ${MESES[n.festa.mes - 1]}</p>
+        <h3>${n.titulo}</h3>
+        <p>${n.dias[0]}</p>
+      `;
+      listaEl.appendChild(card);
+    });
+
+    secaoTodas.appendChild(listaEl);
+    container.appendChild(secaoTodas);
+  }
+  carregar().catch(e => console.error('Erro ao carregar novenas:', e));
+</script>
+
+</body>
+</html>
