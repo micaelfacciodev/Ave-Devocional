@@ -1,0 +1,33 @@
+{
+  "_obs": "audio_ele e audio_ela ficam null até vocês subirem os arquivos no Supabase Storage. Convenção de nome sugerida: {id}-ele.mp3 e {id}-ela.mp3 dentro do bucket 'oracoes'.",
+  "oracoes": [
+    {
+      "id": "ave-maria",
+      "titulo": "Ave Maria",
+      "texto": "Ave Maria, cheia de graça, o Senhor é convosco, bendita sois vós entre as mulheres e bendito é o fruto do vosso ventre, Jesus. Santa Maria, Mãe de Deus, rogai por nós pecadores, agora e na hora de nossa morte. Amém.",
+      "audio_ele": null,
+      "audio_ela": null
+    },
+    {
+      "id": "salve-rainha",
+      "titulo": "Salve Rainha",
+      "texto": "Salve, Rainha, Mãe de misericórdia, vida, doçura, esperança nossa, salve! A vós bradamos, os degredados filhos de Eva. A vós suspiramos, gemendo e chorando neste vale de lágrimas. Eia, pois, advogada nossa, esses vossos olhos misericordiosos a nós volvei. E depois deste desterro, mostrai-nos Jesus, bendito fruto do vosso ventre. Ó clemente, ó piedosa, ó doce sempre Virgem Maria. Rogai por nós, Santa Mãe de Deus, para que sejamos dignos das promessas de Cristo.",
+      "audio_ele": null,
+      "audio_ela": null
+    },
+    {
+      "id": "angelus",
+      "titulo": "Angelus",
+      "texto": "O anjo do Senhor anunciou a Maria, e ela concebeu do Espírito Santo. Ave Maria... Eis aqui a serva do Senhor, faça-se em mim segundo a vossa palavra. Ave Maria... E o Verbo se fez carne, e habitou entre nós. Ave Maria... Rogai por nós, Santa Mãe de Deus, para que sejamos dignos das promessas de Cristo. Oremos: Infundi, Senhor, a vossa graça em nossas almas, para que nós, que pela anunciação do anjo conhecemos a encarnação de vosso Filho, pela sua paixão e morte sejamos conduzidos à glória da ressurreição.",
+      "audio_ele": null,
+      "audio_ela": null
+    },
+    {
+      "id": "memorare",
+      "titulo": "Memorare (Lembrai-vos)",
+      "texto": "Lembrai-vos, ó piedosíssima Virgem Maria, que nunca se ouviu dizer que algum daqueles que têm recorrido à vossa proteção, implorado a vossa assistência ou reclamado o vosso socorro, tenha sido por vós desamparado. Animado eu, pois, com igual confiança, a vós recorro, ó Virgem entre todas singular, e, gemendo sob o peso de meus pecados, me atrevo a comparecer ante a vossa presença soberana. Não desprezeis, ó Mãe de Deus, as minhas súplicas, antes as ouvi propício e as atendei. Amém.",
+      "audio_ele": null,
+      "audio_ela": null
+    }
+  ]
+}

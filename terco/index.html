@@ -23,6 +23,7 @@
     <a href="../novenas/">Novenas</a>
     <a href="../titulos/">Títulos</a>
     <a href="../santos/">Santos</a>
+    <a href="../oracoes/">Orações</a>
   </div>
 </nav>
 
@@ -56,17 +57,27 @@
           <span class="section-sub">${conjunto.dias.join(' e ')}</span>
         </div>
         <div class="parchment-card" style="max-width:100%;">
-          ${conjunto.misterios.map(m => `
-            <div style="text-align:left; margin-bottom:26px;">
+          ${conjunto.misterios.map((m, i) => `
+            <div style="text-align:left; margin-bottom:26px;" data-mistero="${chave}-${i}">
               <p style="font-family:'Cinzel',serif; font-weight:500; font-size:1.15rem; color:var(--wine); margin-bottom:4px;">${m.titulo}</p>
               <p style="font-family:'Inter',sans-serif; font-size:.72rem; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-soft); opacity:.7; margin-bottom:8px;">${m.citacao}</p>
               <p style="font-family:'Crimson Pro',serif; font-style:italic; color:var(--ink-soft); line-height:1.7;">${m.contemplacao}</p>
+              <div class="audio-slot" data-audio-ele="${m.audio_ele || ''}" data-audio-ela="${m.audio_ela || ''}"></div>
             </div>
           `).join('')}
         </div>
       `;
       container.appendChild(secao);
     }
+
+    // monta um player em cada slot de áudio
+    const { montarPlayer } = await import('../js/audio-player.js');
+    document.querySelectorAll('.audio-slot').forEach(slot => {
+      montarPlayer(slot, {
+        audio_ele: slot.dataset.audioEle || null,
+        audio_ela: slot.dataset.audioEla || null
+      });
+    });
   }
   carregar().catch(e => console.error('Erro ao carregar mistérios:', e));
 </script>
