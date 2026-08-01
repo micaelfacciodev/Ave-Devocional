@@ -228,10 +228,12 @@ nav{
   width:100%; padding:9px 12px; margin-bottom:10px; font-family:'Inter',sans-serif; font-size:.82rem;
   background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); border-radius:2px; color:var(--parchment);
 }
-.auth-widget__enviar{
-  width:100%; padding:9px; font-family:'Inter',sans-serif; font-size:.78rem; font-weight:600;
-  background:var(--wine); color:var(--parchment); border:none; border-radius:2px; cursor:pointer;
+.auth-widget__google{
+  width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+  padding:10px; font-family:'Inter',sans-serif; font-size:.82rem; font-weight:600;
+  background:var(--parchment); color:var(--ink); border:none; border-radius:2px; cursor:pointer;
 }
+.auth-widget__google:hover{background:var(--parchment-dim);}
 .auth-widget__status{font-family:'Inter',sans-serif; font-size:.7rem; color:var(--gold-bright); margin-top:8px; min-height:1em;}
 .auth-widget__email{font-family:'Inter',sans-serif; font-size:.8rem; color:var(--parchment-dim); margin-bottom:10px; word-break:break-all;}
 .auth-widget__sair{
