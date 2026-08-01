@@ -19,15 +19,10 @@ Terço do dia, novenas marianas e santo do dia, calculados automaticamente a par
     └── titulos-marianos.json
 ```
 
-## Importante: caminhos absolutos
-Os links de navegação e os `fetch()` usam caminhos absolutos (`/data/...`, `/css/style.css`).
-Isso funciona perfeitamente com um **domínio próprio** apontado pro GitHub Pages
-(Settings → Pages → Custom domain).
-
-Se for publicar em `usuario.github.io/Ave-Devocional/` (sem domínio próprio),
-os caminhos absolutos vão quebrar, porque o site fica numa subpasta.
-Nesse caso, ou adiciona um domínio próprio, ou troca os caminhos absolutos
-por relativos antes de publicar.
+## Caminhos
+Todos os links e `fetch()` usam caminhos relativos, então o site funciona tanto em
+`usuario.github.io/Ave-Devocional/` (subpasta) quanto num domínio próprio, sem precisar
+ajustar nada em nenhum dos dois casos.
 
 ## Deploy
 1. Settings → Pages → Source: branch `main`, pasta `/ (root)`.
