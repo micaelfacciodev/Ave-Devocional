@@ -24,53 +24,66 @@ function construirSequencia(conjunto) {
 
 /**
  * Gera as posições geométricas de um rosário no formato "pousado à mão":
- * uma alça em espiral solta (não um círculo perfeito) de 65 contas, uma
- * medalha marcando a junção, e uma cauda curvada terminando no crucifixo.
- * Inspirado em fotos reais de terço deixado sobre a mesa, enrolado.
+ * DUAS alças que se cruzam — uma grande por fora, uma menor por dentro
+ * se sobrepondo — como um terço de verdade deixado enrolado sobre a mesa,
+ * não uma espiral matemática única.
  */
 function gerarGeometriaRosario() {
   const beads = [];
-  const cx = 220, cy = 230;
 
-  // --- Alça em espiral: gira ~1.35 volta, do raio externo pro interno,
-  //     com uma leve ondulação pra não parecer um círculo matemático.
-  const totalLoop = 65;
-  const anguloInicial = -100; // graus, ponto de partida (perto do topo)
-  const voltas = 1.32;
-  const anguloTotal = 360 * voltas;
-  const rExterno = 195, rInterno = 88;
-
-  for (let i = 0; i < totalLoop; i++) {
-    const frac = i / (totalLoop - 1);
-    const anguloDeg = anguloInicial + frac * anguloTotal;
-    const rad = (anguloDeg * Math.PI) / 180;
-    let r = rExterno - (rExterno - rInterno) * frac;
-    r *= 1 + 0.035 * Math.sin(i * 0.9) + 0.02 * Math.cos(i * 0.31);
-    const x = cx + r * Math.cos(rad);
-    const y = cy + r * Math.sin(rad) * 0.92; // levemente achatado, mais natural
-    const posNaDezena = i % 13; // 0=mistério,1=PaiNosso,2-11=aves,12=glória
-    let tipo = 'pequena';
-    if (posNaDezena === 0 || posNaDezena === 1 || posNaDezena === 12) tipo = 'grande';
-    beads.push({ x, y, tipo });
+  // --- Alça externa (maior): ~40 contas, elipse grande
+  const c1 = { x: 225, y: 175 };
+  const rx1 = 175, ry1 = 145;
+  const totalExterna = 40;
+  const inicioExt = -96; // graus
+  const sweepExt = 335;
+  for (let i = 0; i < totalExterna; i++) {
+    const frac = i / (totalExterna - 1);
+    const deg = inicioExt + frac * sweepExt;
+    const rad = (deg * Math.PI) / 180;
+    const ondulacao = 1 + 0.03 * Math.sin(i * 1.1);
+    const x = c1.x + rx1 * ondulacao * Math.cos(rad);
+    const y = c1.y + ry1 * ondulacao * Math.sin(rad);
+    beads.push({ x, y });
   }
 
-  // --- Cauda: começa onde a espiral termina, curva solta até o crucifixo.
-  // Construída de "perto da alça" até o crucifixo, depois invertida pra
-  // ficar na ordem real da oração (crucifixo é o primeiro passo).
-  const pontaEspiral = beads[0];
-  const controle = { x: pontaEspiral.x - 70, y: pontaEspiral.y + 95 };
-  const pontaCauda = { x: pontaEspiral.x - 55, y: pontaEspiral.y + 250 };
+  // --- Alça interna (menor): ~25 contas, elipse menor, deslocada pra
+  //     se sobrepor à externa (o efeito de "cruzar por dentro")
+  const c2 = { x: 178, y: 255 };
+  const rx2 = 95, ry2 = 82;
+  const totalInterna = 25;
+  const inicioInt = -60;
+  const sweepInt = 300;
+  for (let i = 0; i < totalInterna; i++) {
+    const frac = i / (totalInterna - 1);
+    const deg = inicioInt + frac * sweepInt;
+    const rad = (deg * Math.PI) / 180;
+    const ondulacao = 1 + 0.04 * Math.sin(i * 1.3 + 2);
+    const x = c2.x + rx2 * ondulacao * Math.cos(rad);
+    const y = c2.y + ry2 * ondulacao * Math.sin(rad);
+    beads.push({ x, y });
+  }
 
-  // ordem "perto da alça" → "crucifixo"
+  // marca os tipos (grande a cada 13ª conta = mistério/Pai Nosso/Glória)
+  beads.forEach((b, i) => {
+    const posNaDezena = i % 13;
+    b.tipo = (posNaDezena === 0 || posNaDezena === 1 || posNaDezena === 12) ? 'grande' : 'pequena';
+  });
+
+  // --- Cauda: sai do fim da alça interna, curva solta até o crucifixo
+  const pontaAlca = beads[beads.length - 1];
+  const controle = { x: pontaAlca.x - 55, y: pontaAlca.y + 100 };
+  const pontaCauda = { x: pontaAlca.x - 40, y: pontaAlca.y + 245 };
+
   const tiposPertoDaAlca = ['medalha', 'pequena', 'pequena', 'pequena', 'grande', 'media', 'crucifixo'];
   const caudaBeads = [];
   for (let i = 0; i < 7; i++) {
     const t = (i + 1) / 7;
-    const x = (1 - t) * (1 - t) * pontaEspiral.x + 2 * (1 - t) * t * controle.x + t * t * pontaCauda.x;
-    const y = (1 - t) * (1 - t) * pontaEspiral.y + 2 * (1 - t) * t * controle.y + t * t * pontaCauda.y;
+    const x = (1 - t) * (1 - t) * pontaAlca.x + 2 * (1 - t) * t * controle.x + t * t * pontaCauda.x;
+    const y = (1 - t) * (1 - t) * pontaAlca.y + 2 * (1 - t) * t * controle.y + t * t * pontaCauda.y;
     caudaBeads.push({ x, y, tipo: tiposPertoDaAlca[i] });
   }
-  caudaBeads.reverse(); // agora: crucifixo, media(credo), grande(PN), 3x pequena(aves), medalha(glória)
+  caudaBeads.reverse(); // crucifixo, media(credo), grande(PN), 3x pequena(aves), medalha(glória)
 
   return [...caudaBeads, ...beads];
 }
