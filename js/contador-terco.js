@@ -23,39 +23,56 @@ function construirSequencia(conjunto) {
 }
 
 /**
- * Gera as posições geométricas de um rosário: uma alça (loop) de 65 contas
- * (5 dezenas de 10 Ave Marias + 5 contas grandes do Pai Nosso/mistério)
- * e uma haste (cauda) de 7 contas terminando no crucifixo.
- * Retorna um array alinhado 1:1 com as contas "reais" da oração (índices 0..71).
+ * Gera as posições geométricas de um rosário no formato "pousado à mão":
+ * uma alça em espiral solta (não um círculo perfeito) de 65 contas, uma
+ * medalha marcando a junção, e uma cauda curvada terminando no crucifixo.
+ * Inspirado em fotos reais de terço deixado sobre a mesa, enrolado.
  */
 function gerarGeometriaRosario() {
   const beads = [];
-  const cx = 200, cy = 195;
+  const cx = 220, cy = 230;
 
-  // --- Cauda (7 contas): crucifixo → credo → Pai Nosso → 3 Aves → Glória
-  const caudaY0 = 460, caudaY1 = 345;
-  for (let i = 0; i < 7; i++) {
-    const y = caudaY0 - (i / 6) * (caudaY0 - caudaY1);
-    beads.push({ x: cx, y, tipo: i === 0 ? 'crucifixo' : (i === 2 || i === 6 ? 'grande' : (i === 1 ? 'media' : 'pequena')) });
-  }
-
-  // --- Alça (65 contas): 5 dezenas de [mistério(grande) + PaiNosso(grande) + 10 aves(pequenas) + glória(grande)]
-  const rx = 150, ry = 145;
-  const gapDeg = 26; // abertura na base onde a alça encontra a cauda
-  const thetaStart = 180 + gapDeg / 2;
-  const sweep = 360 - gapDeg;
+  // --- Alça em espiral: gira ~1.35 volta, do raio externo pro interno,
+  //     com uma leve ondulação pra não parecer um círculo matemático.
   const totalLoop = 65;
+  const anguloInicial = -100; // graus, ponto de partida (perto do topo)
+  const voltas = 1.32;
+  const anguloTotal = 360 * voltas;
+  const rExterno = 195, rInterno = 88;
+
   for (let i = 0; i < totalLoop; i++) {
-    const theta = ((thetaStart + (i / (totalLoop - 1)) * sweep) * Math.PI) / 180;
-    const x = cx + rx * Math.sin(theta);
-    const y = cy - ry * Math.cos(theta);
+    const frac = i / (totalLoop - 1);
+    const anguloDeg = anguloInicial + frac * anguloTotal;
+    const rad = (anguloDeg * Math.PI) / 180;
+    let r = rExterno - (rExterno - rInterno) * frac;
+    r *= 1 + 0.035 * Math.sin(i * 0.9) + 0.02 * Math.cos(i * 0.31);
+    const x = cx + r * Math.cos(rad);
+    const y = cy + r * Math.sin(rad) * 0.92; // levemente achatado, mais natural
     const posNaDezena = i % 13; // 0=mistério,1=PaiNosso,2-11=aves,12=glória
     let tipo = 'pequena';
     if (posNaDezena === 0 || posNaDezena === 1 || posNaDezena === 12) tipo = 'grande';
     beads.push({ x, y, tipo });
   }
 
-  return beads;
+  // --- Cauda: começa onde a espiral termina, curva solta até o crucifixo.
+  // Construída de "perto da alça" até o crucifixo, depois invertida pra
+  // ficar na ordem real da oração (crucifixo é o primeiro passo).
+  const pontaEspiral = beads[0];
+  const controle = { x: pontaEspiral.x - 70, y: pontaEspiral.y + 95 };
+  const pontaCauda = { x: pontaEspiral.x - 55, y: pontaEspiral.y + 250 };
+
+  // ordem "perto da alça" → "crucifixo"
+  const tiposPertoDaAlca = ['medalha', 'pequena', 'pequena', 'pequena', 'grande', 'media', 'crucifixo'];
+  const caudaBeads = [];
+  for (let i = 0; i < 7; i++) {
+    const t = (i + 1) / 7;
+    const x = (1 - t) * (1 - t) * pontaEspiral.x + 2 * (1 - t) * t * controle.x + t * t * pontaCauda.x;
+    const y = (1 - t) * (1 - t) * pontaEspiral.y + 2 * (1 - t) * t * controle.y + t * t * pontaCauda.y;
+    caudaBeads.push({ x, y, tipo: tiposPertoDaAlca[i] });
+  }
+  caudaBeads.reverse(); // agora: crucifixo, media(credo), grande(PN), 3x pequena(aves), medalha(glória)
+
+  return [...caudaBeads, ...beads];
 }
 
 export function montarContadorTerco(container, conjunto) {
@@ -75,7 +92,8 @@ export function montarContadorTerco(container, conjunto) {
 
   container.innerHTML = `
     <div class="contador-terco">
-      <svg class="rosario-svg" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg"></svg>
+      <svg class="rosario-svg" viewBox="0 0 440 560" xmlns="http://www.w3.org/2000/svg"></svg>
+      <p class="contador-terco__toque-aviso">👆 Toque em qualquer lugar da imagem pra avançar</p>
       <p class="contador-terco__passo-num"></p>
       <h3 class="contador-terco__titulo"></h3>
       <p class="contador-terco__subtitulo"></p>
@@ -96,27 +114,25 @@ export function montarContadorTerco(container, conjunto) {
 
   function renderSVG() {
     const atual = contaGlobalAtual();
-    let path = `<path d="M ${geometria.map(b => `${b.x},${b.y}`).join(' L ')}" fill="none" stroke="rgba(224,190,85,.18)" stroke-width="1.5"/>`;
+    let path = `<path d="M ${geometria.map(b => `${b.x},${b.y}`).join(' L ')}" fill="none" stroke="rgba(122,46,59,.15)" stroke-width="2.5"/>`;
     let circles = geometria.map((b, i) => {
-      const raio = b.tipo === 'crucifixo' ? 9 : b.tipo === 'grande' ? 6.5 : b.tipo === 'media' ? 5.5 : 4.2;
       const feito = i < atual;
       const ehAtual = i === atual;
-      const classe = `rosario-bead ${feito ? 'feita' : ''} ${ehAtual ? 'atual' : ''} ${b.tipo === 'crucifixo' ? 'crucifixo' : ''}`;
-      const clicavel = ehAtual ? `data-clicavel="1"` : '';
+      const classe = `rosario-bead tipo-${b.tipo} ${feito ? 'feita' : ''} ${ehAtual ? 'atual' : ''}`;
+
       if (b.tipo === 'crucifixo') {
-        return `<g class="${classe}" ${clicavel} data-index="${i}" transform="translate(${b.x},${b.y})">
-          <rect x="-2" y="-11" width="4" height="20" rx="1"/>
-          <rect x="-8" y="-6" width="16" height="4" rx="1"/>
+        return `<g class="${classe}" transform="translate(${b.x},${b.y})">
+          <rect x="-4" y="-21" width="8" height="38" rx="2"/>
+          <rect x="-14" y="-10" width="28" height="8" rx="2"/>
         </g>`;
       }
-      return `<circle class="${classe}" ${clicavel} data-index="${i}" cx="${b.x}" cy="${b.y}" r="${raio}"/>`;
+      if (b.tipo === 'medalha') {
+        return `<ellipse class="${classe}" cx="${b.x}" cy="${b.y}" rx="15" ry="19"/>`;
+      }
+      const raio = b.tipo === 'grande' ? 16 : b.tipo === 'media' ? 13 : 11;
+      return `<circle class="${classe}" cx="${b.x}" cy="${b.y}" r="${raio}"/>`;
     }).join('');
     svg.innerHTML = path + circles;
-
-    const beadAtualEl = svg.querySelector('[data-clicavel="1"]');
-    if (beadAtualEl) {
-      beadAtualEl.addEventListener('click', avancar);
-    }
   }
 
   function render() {
@@ -164,5 +180,6 @@ export function montarContadorTerco(container, conjunto) {
   }
 
   btnAvancar.addEventListener('click', avancar);
+  svg.addEventListener('click', avancar);
   render();
 }

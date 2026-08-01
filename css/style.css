@@ -253,19 +253,50 @@ nav{
   color:var(--ink); border-radius:2px; max-width:480px; margin:0 auto 60px;
   padding:16px 24px 32px; text-align:center; box-shadow:0 30px 60px -20px rgba(0,0,0,.5), 0 0 0 1px rgba(201,162,39,.25);
 }
-.rosario-svg{width:100%; max-width:340px; height:auto; display:block; margin:0 auto 6px;}
-.rosario-bead{fill:none; stroke:var(--wine); stroke-width:1.3; opacity:.35; transition:fill .2s, opacity .2s, transform .2s; transform-origin:center; transform-box:fill-box;}
-.rosario-bead.feita{fill:var(--wine); opacity:.85;}
-.rosario-bead.atual{fill:var(--gold-bright); stroke:var(--gold-bright); opacity:1; cursor:pointer; animation:pulsa-conta 1.1s ease-in-out infinite;}
-.rosario-bead.crucifixo{fill:var(--wine); stroke:none; opacity:.6;}
-.rosario-bead.crucifixo.feita, .rosario-bead.crucifixo.atual{opacity:1;}
-@keyframes pulsa-conta{0%,100%{transform:scale(1);}50%{transform:scale(1.35);}}
+.rosario-svg{width:100%; max-width:380px; height:auto; display:block; margin:0 auto 6px; cursor:pointer;}
+.rosario-bead{transition:fill .2s, opacity .2s, transform .15s; transform-origin:center; transform-box:fill-box;}
+
+.rosario-bead.tipo-pequena{fill:none; stroke:var(--wine); stroke-width:1.6; opacity:.4;}
+.rosario-bead.tipo-pequena.feita{fill:#8a5a3a; stroke:#8a5a3a; opacity:.9;}
+
+.rosario-bead.tipo-grande, .rosario-bead.tipo-media, .rosario-bead.tipo-medalha{
+  fill:none; stroke:var(--gold); stroke-width:1.8; opacity:.5;
+}
+.rosario-bead.tipo-grande.feita, .rosario-bead.tipo-media.feita, .rosario-bead.tipo-medalha.feita{
+  fill:var(--gold); stroke:var(--gold); opacity:.95;
+}
+
+.rosario-bead.tipo-crucifixo{fill:none; stroke:var(--wine); stroke-width:1.8; opacity:.55;}
+.rosario-bead.tipo-crucifixo.feita{fill:var(--wine); stroke:var(--wine); opacity:1;}
+
+.rosario-bead.atual{opacity:1 !important; animation:pulsa-conta 1.1s ease-in-out infinite;}
+.rosario-bead.tipo-pequena.atual{fill:var(--gold-bright); stroke:var(--gold-bright);}
+.rosario-bead.tipo-grande.atual, .rosario-bead.tipo-media.atual, .rosario-bead.tipo-medalha.atual{fill:var(--gold-bright); stroke:var(--gold-bright);}
+.rosario-bead.tipo-crucifixo.atual{fill:var(--gold-bright); stroke:var(--gold-bright);}
+@keyframes pulsa-conta{0%,100%{transform:scale(1);}50%{transform:scale(1.25);}}
 @media (prefers-reduced-motion: reduce){.rosario-bead.atual{animation:none;}}
 
-.contador-terco__passo-num{font-family:'Inter',sans-serif; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); opacity:.8; margin-bottom:8px;}
-.contador-terco__titulo{font-family:'Cinzel',serif; font-weight:500; font-size:1.35rem; color:var(--ink); margin-bottom:10px; line-height:1.3;}
-.contador-terco__subtitulo{font-family:'Crimson Pro',serif; font-style:italic; color:var(--ink-soft); line-height:1.6; margin-bottom:20px; min-height:1.2em;}
-.contador-terco__avancar{min-width:220px;}
+.contador-terco__toque-aviso{font-family:'Inter',sans-serif; font-size:.78rem; color:var(--wine); opacity:.75; margin-bottom:14px;}
+
+.contador-terco__passo-num{font-family:'Inter',sans-serif; font-size:.82rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); opacity:.85; margin-bottom:10px; font-weight:600;}
+.contador-terco__titulo{font-family:'Cinzel',serif; font-weight:500; font-size:1.6rem; color:var(--ink); margin-bottom:12px; line-height:1.3;}
+.contador-terco__subtitulo{font-family:'Crimson Pro',serif; font-style:italic; font-size:1.05rem; color:var(--ink-soft); line-height:1.65; margin-bottom:22px; min-height:1.2em;}
+.contador-terco__avancar{min-width:260px; padding:16px 28px; font-size:.95rem;}
+
+.guia-terco{
+  max-width:480px; margin:0 auto; background:rgba(255,255,255,.03); border:1px solid rgba(201,162,39,.2);
+  border-radius:2px; padding:18px 22px;
+}
+.guia-terco summary{
+  font-family:'Inter',sans-serif; font-size:.85rem; font-weight:600; color:var(--gold-bright);
+  cursor:pointer; letter-spacing:.02em;
+}
+.guia-terco__svg{width:100%; max-width:220px; display:block; margin:18px auto 14px;}
+.guia-terco__lista{
+  font-family:'Inter',sans-serif; font-size:.82rem; color:var(--parchment-dim); line-height:1.8;
+  padding-left:20px; opacity:.9;
+}
+.guia-terco__lista strong{color:var(--gold-bright);}
 
 .list-card{
   display:block; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:2px;
