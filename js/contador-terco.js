@@ -92,7 +92,26 @@ export function montarContadorTerco(container, conjunto) {
 
   container.innerHTML = `
     <div class="contador-terco">
-      <svg class="rosario-svg" viewBox="0 0 440 560" xmlns="http://www.w3.org/2000/svg"></svg>
+      <svg class="rosario-svg" viewBox="0 0 440 560" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="gradMadeira" cx="35%" cy="28%" r="75%">
+            <stop offset="0%" stop-color="#d9b384"/>
+            <stop offset="55%" stop-color="#8a5a34"/>
+            <stop offset="100%" stop-color="#4f3018"/>
+          </radialGradient>
+          <radialGradient id="gradDourado" cx="35%" cy="28%" r="75%">
+            <stop offset="0%" stop-color="#f7e6a8"/>
+            <stop offset="50%" stop-color="#c9a227"/>
+            <stop offset="100%" stop-color="#6e5210"/>
+          </radialGradient>
+          <radialGradient id="gradBronze" cx="35%" cy="25%" r="80%">
+            <stop offset="0%" stop-color="#e2c98a"/>
+            <stop offset="55%" stop-color="#8a6a2e"/>
+            <stop offset="100%" stop-color="#3d2c10"/>
+          </radialGradient>
+        </defs>
+        <g class="rosario-conteudo"></g>
+      </svg>
       <p class="contador-terco__toque-aviso">👆 Toque em qualquer lugar da imagem pra avançar</p>
       <p class="contador-terco__passo-num"></p>
       <h3 class="contador-terco__titulo"></h3>
@@ -102,6 +121,7 @@ export function montarContadorTerco(container, conjunto) {
   `;
 
   const svg = container.querySelector('.rosario-svg');
+  const grupoConteudo = container.querySelector('.rosario-conteudo');
   const passoNumEl = container.querySelector('.contador-terco__passo-num');
   const tituloEl = container.querySelector('.contador-terco__titulo');
   const subtituloEl = container.querySelector('.contador-terco__subtitulo');
@@ -114,25 +134,41 @@ export function montarContadorTerco(container, conjunto) {
 
   function renderSVG() {
     const atual = contaGlobalAtual();
-    let path = `<path d="M ${geometria.map(b => `${b.x},${b.y}`).join(' L ')}" fill="none" stroke="rgba(122,46,59,.15)" stroke-width="2.5"/>`;
-    let circles = geometria.map((b, i) => {
+    const cordao = `<path d="M ${geometria.map(b => `${b.x},${b.y}`).join(' L ')}" fill="none" stroke="#3d2818" stroke-width="2.5" opacity=".55"/>`;
+
+    const gradientePorTipo = {
+      pequena: 'url(#gradMadeira)',
+      grande: 'url(#gradDourado)',
+      media: 'url(#gradDourado)',
+      medalha: 'url(#gradDourado)',
+      crucifixo: 'url(#gradBronze)',
+    };
+
+    let contas = geometria.map((b, i) => {
       const feito = i < atual;
       const ehAtual = i === atual;
       const classe = `rosario-bead tipo-${b.tipo} ${feito ? 'feita' : ''} ${ehAtual ? 'atual' : ''}`;
+      const fill = gradientePorTipo[b.tipo];
+
+      let brilho = '';
+      if (ehAtual) {
+        brilho = `<circle class="rosario-glow" cx="${b.x}" cy="${b.y}" r="${b.tipo === 'crucifixo' ? 30 : 24}" fill="none" stroke="var(--gold-bright)" stroke-width="3" opacity=".6"/>`;
+      }
 
       if (b.tipo === 'crucifixo') {
-        return `<g class="${classe}" transform="translate(${b.x},${b.y})">
-          <rect x="-4" y="-21" width="8" height="38" rx="2"/>
-          <rect x="-14" y="-10" width="28" height="8" rx="2"/>
+        return `${brilho}<g class="${classe}" transform="translate(${b.x},${b.y})">
+          <rect x="-4.5" y="-22" width="9" height="40" rx="2.5" fill="${fill}"/>
+          <rect x="-15" y="-11" width="30" height="9" rx="2.5" fill="${fill}"/>
         </g>`;
       }
       if (b.tipo === 'medalha') {
-        return `<ellipse class="${classe}" cx="${b.x}" cy="${b.y}" rx="15" ry="19"/>`;
+        return `${brilho}<ellipse class="${classe}" cx="${b.x}" cy="${b.y}" rx="16" ry="20" fill="${fill}"/>`;
       }
-      const raio = b.tipo === 'grande' ? 16 : b.tipo === 'media' ? 13 : 11;
-      return `<circle class="${classe}" cx="${b.x}" cy="${b.y}" r="${raio}"/>`;
+      const raio = b.tipo === 'grande' ? 17 : b.tipo === 'media' ? 14 : 11.5;
+      return `${brilho}<circle class="${classe}" cx="${b.x}" cy="${b.y}" r="${raio}" fill="${fill}"/>`;
     }).join('');
-    svg.innerHTML = path + circles;
+
+    grupoConteudo.innerHTML = cordao + contas;
   }
 
   function render() {
