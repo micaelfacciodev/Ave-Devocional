@@ -33,6 +33,14 @@
   <h1 class="page-title">O Santo Terço</h1>
   <p class="page-intro">Cada dia da semana contempla um conjunto de mistérios da vida de Jesus e Maria. Escolha um conjunto abaixo para ler as cinco meditações completas.</p>
 
+  <section class="section" style="padding-top:0;">
+    <div class="section-head">
+      <h2 class="section-title">Rezar agora, guiado</h2>
+      <span class="section-sub" id="contador-conjunto-label"></span>
+    </div>
+    <div id="contador-terco-container"></div>
+  </section>
+
   <div id="misterios-lista"></div>
 </main>
 
@@ -44,6 +52,11 @@
     const dados = await resp.json();
     const hoje = new Date();
     const chaveHoje = dados.regra_dia_semana[String(hoje.getDay())];
+
+    const conjuntoHoje = dados.conjuntos[chaveHoje];
+    document.getElementById('contador-conjunto-label').textContent = conjuntoHoje.nome;
+    const { montarContadorTerco } = await import('../js/contador-terco.js');
+    montarContadorTerco(document.getElementById('contador-terco-container'), conjuntoHoje);
 
     const container = document.getElementById('misterios-lista');
 

@@ -248,6 +248,21 @@ nav{
 .fav-btn:hover{opacity:.85;}
 .fav-btn.ativo{opacity:1;}
 
+.contador-terco{
+  background:linear-gradient(180deg, var(--parchment) 0%, var(--parchment-dim) 100%);
+  color:var(--ink); border-radius:2px; max-width:560px; margin:0 auto 60px;
+  padding:40px 36px; text-align:center; box-shadow:0 30px 60px -20px rgba(0,0,0,.5), 0 0 0 1px rgba(201,162,39,.25);
+}
+.contador-terco__progresso{height:4px; background:rgba(122,46,59,.15); border-radius:3px; overflow:hidden; margin-bottom:22px;}
+.contador-terco__progresso-barra{height:100%; width:0%; background:var(--wine); transition:width .3s;}
+.contador-terco__passo-num{font-family:'Inter',sans-serif; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); opacity:.8; margin-bottom:8px;}
+.contador-terco__titulo{font-family:'Cinzel',serif; font-weight:500; font-size:1.35rem; color:var(--ink); margin-bottom:10px; line-height:1.3;}
+.contador-terco__subtitulo{font-family:'Crimson Pro',serif; font-style:italic; color:var(--ink-soft); line-height:1.6; margin-bottom:20px; min-height:1.2em;}
+.contador-terco__beads{display:flex; justify-content:center; flex-wrap:wrap; gap:6px; margin-bottom:22px;}
+.bead-dot{width:10px; height:10px; border-radius:50%; border:1.5px solid var(--wine); opacity:.35; transition:opacity .2s, transform .2s;}
+.bead-dot.feito{background:var(--wine); opacity:1; transform:scale(1.1);}
+.contador-terco__avancar{min-width:200px;}
+
 .list-card{
   display:block; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:2px;
   padding:22px 26px; margin-bottom:14px; transition:border-color .2s, transform .2s;
