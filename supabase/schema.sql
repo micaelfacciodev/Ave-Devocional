@@ -16,14 +16,17 @@ create table if not exists favoritos (
 
 alter table favoritos enable row level security;
 
+drop policy if exists "usuário vê só os próprios favoritos" on favoritos;
 create policy "usuário vê só os próprios favoritos"
   on favoritos for select
   using (auth.uid() = user_id);
 
+drop policy if exists "usuário insere só os próprios favoritos" on favoritos;
 create policy "usuário insere só os próprios favoritos"
   on favoritos for insert
   with check (auth.uid() = user_id);
 
+drop policy if exists "usuário remove só os próprios favoritos" on favoritos;
 create policy "usuário remove só os próprios favoritos"
   on favoritos for delete
   using (auth.uid() = user_id);
@@ -39,14 +42,17 @@ create table if not exists streak_oracao (
 
 alter table streak_oracao enable row level security;
 
+drop policy if exists "usuário vê só o próprio streak" on streak_oracao;
 create policy "usuário vê só o próprio streak"
   on streak_oracao for select
   using (auth.uid() = user_id);
 
+drop policy if exists "usuário atualiza só o próprio streak" on streak_oracao;
 create policy "usuário atualiza só o próprio streak"
   on streak_oracao for update
   using (auth.uid() = user_id);
 
+drop policy if exists "usuário cria só o próprio streak" on streak_oracao;
 create policy "usuário cria só o próprio streak"
   on streak_oracao for insert
   with check (auth.uid() = user_id);
@@ -62,6 +68,7 @@ create table if not exists newsletter_assinantes (
 
 alter table newsletter_assinantes enable row level security;
 
+drop policy if exists "qualquer um pode se inscrever" on newsletter_assinantes;
 create policy "qualquer um pode se inscrever"
   on newsletter_assinantes for insert
   with check (true);
