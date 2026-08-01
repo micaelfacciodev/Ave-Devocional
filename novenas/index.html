@@ -7,22 +7,22 @@
 <meta name="description" content="Novenas de Nossa Senhora, com intenção diária calculada automaticamente.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 <div class="stars"></div>
 
 <nav>
-  <a class="brand" href="/">
+  <a class="brand" href="../">
     <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.8 8.6 L20 9.5 L15.2 14 L16.6 20.5 L12 17 L7.4 20.5 L8.8 14 L4 9.5 L10.2 8.6 Z" fill="currentColor" opacity="0.9"/></svg>
     Ave
   </a>
   <div class="nav-links">
-    <a href="/">Hoje</a>
-    <a href="/terco">Terço</a>
-    <a href="/novenas" class="active">Novenas</a>
-    <a href="/titulos">Títulos</a>
-    <a href="/santos">Santos</a>
+    <a href="../">Hoje</a>
+    <a href="../terco/">Terço</a>
+    <a href="../novenas/" class="active">Novenas</a>
+    <a href="../titulos/">Títulos</a>
+    <a href="../santos/">Santos</a>
   </div>
 </nav>
 
@@ -37,12 +37,12 @@
 <footer>Ave — devocional mariano diário</footer>
 
 <script type="module">
-  import { getNovenaAtiva, getProximaFesta } from '/js/devocional.js';
+  import { getNovenaAtiva, getProximaFesta } from '../js/devocional.js';
 
   const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
   async function carregar() {
-    const resp = await fetch('/data/novenas.json');
+    const resp = await fetch('../data/novenas.json');
     const dados = await resp.json();
     const hoje = new Date();
     const ativa = getNovenaAtiva(dados, hoje);

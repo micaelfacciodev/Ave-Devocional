@@ -4,10 +4,13 @@
  * Uso: import { getDevocionalDeHoje } from './devocional.js'
  */
 
-const DATA_PATH = '/data';
+// Resolve sempre em relação à localização deste arquivo (js/devocional.js),
+// não à página que o importou — assim funciona em qualquer profundidade de pasta
+// e também num subcaminho de GitHub Pages (ex.: usuario.github.io/repo/).
+const DATA_PATH = new URL('../data/', import.meta.url);
 
 async function carregarJSON(nome) {
-  const resp = await fetch(`${DATA_PATH}/${nome}.json`);
+  const resp = await fetch(new URL(`${nome}.json`, DATA_PATH));
   if (!resp.ok) throw new Error(`Falha ao carregar ${nome}.json`);
   return resp.json();
 }
