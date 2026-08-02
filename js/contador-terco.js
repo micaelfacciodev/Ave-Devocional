@@ -1,32 +1,24 @@
 import { marcarOracaoDeHoje, getUsuarioAtual } from './supabase-client.js';
 
-const ORACOES_TEXTO = {
-  sinalCruz: 'Em nome do Pai, e do Filho, e do Espírito Santo. Amém.',
-  credo: 'Creio em Deus Pai todo-poderoso, criador do céu e da terra. E em Jesus Cristo, seu único filho, Nosso Senhor, que foi concebido pelo poder do Espírito Santo, nasceu da Virgem Maria, padeceu sob Pôncio Pilatos, foi crucificado, morto e sepultado, desceu à mansão dos mortos, ressuscitou ao terceiro dia, subiu aos céus, está sentado à direita de Deus Pai todo-poderoso, donde há de vir a julgar os vivos e os mortos. Creio no Espírito Santo, na Santa Igreja Católica, na comunhão dos santos, na remissão dos pecados, na ressurreição da carne, na vida eterna. Amém.',
-  paiNosso: 'Pai nosso que estais nos Céus, santificado seja o Vosso nome; venha a nós o Vosso reino; seja feita a Vossa vontade, assim na terra como no Céu. O pão nosso de cada dia nos dai hoje; perdoai-nos as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido; e não nos deixeis cair em tentação; mas livrai-nos do mal. Amém.',
-  aveMaria: 'Ave Maria, cheia de graça, o Senhor é convosco, bendita sois vós entre as mulheres e bendito é o fruto do vosso ventre, Jesus. Santa Maria, Mãe de Deus, rogai por nós pecadores, agora e na hora de nossa morte. Amém.',
-  gloria: 'Glória ao Pai, ao Filho e ao Espírito Santo. Como era no princípio, agora e sempre, e por todos os séculos dos séculos. Amém.',
-  salveRainha: 'Salve, Rainha, Mãe de misericórdia, vida, doçura, esperança nossa, salve! A vós bradamos, os degredados filhos de Eva. A vós suspiramos, gemendo e chorando neste vale de lágrimas. Eia, pois, advogada nossa, esses vossos olhos misericordiosos a nós volvei. E depois deste desterro, mostrai-nos Jesus, bendito fruto do vosso ventre. Ó clemente, ó piedosa, ó doce sempre Virgem Maria.',
-};
-
 /**
  * 1 TOQUE = 1 CONTA FÍSICA, sempre. 61 elementos tocáveis (59 contas +
  * medalha + crucifixo): crucifixo(Sinal da Cruz+Credo) → Pai Nosso →
  * 3 Ave Marias → medalha(Glória) → 5 dezenas de 11 (Pai Nosso+mistério,
  * depois 10 Ave Marias).
  */
-function construirSequencia(conjunto) {
+function construirSequencia(conjunto, oracoesPorId) {
+  const texto = (id) => oracoesPorId[id]?.texto || '';
   const seq = [
-    { titulo: 'Sinal da Cruz + Credo', oracaoTexto: ORACOES_TEXTO.sinalCruz + ' ' + ORACOES_TEXTO.credo },
-    { titulo: 'Pai Nosso', oracaoTexto: ORACOES_TEXTO.paiNosso },
-    { titulo: '3 Ave Marias', subtitulo: 'pela Fé, Esperança e Caridade', oracaoTexto: ORACOES_TEXTO.aveMaria, avesTotal: 3 },
-    { titulo: 'Glória ao Pai', subtitulo: 'Aqui começa a alça do terço.', oracaoTexto: ORACOES_TEXTO.gloria },
+    { titulo: 'Sinal da Cruz + Credo', oracaoTexto: texto('sinal-cruz-credo'), audioId: 'sinal-cruz-credo' },
+    { titulo: 'Pai Nosso', oracaoTexto: texto('pai-nosso'), audioId: 'pai-nosso' },
+    { titulo: '3 Ave Marias', subtitulo: 'pela Fé, Esperança e Caridade', oracaoTexto: texto('ave-maria'), audioId: 'ave-maria', avesTotal: 3 },
+    { titulo: 'Glória ao Pai', subtitulo: 'Aqui começa a alça do terço.', oracaoTexto: texto('gloria'), audioId: 'gloria' },
   ];
   conjunto.misterios.forEach((m, i) => {
-    seq.push({ titulo: `Pai Nosso — ${m.titulo}`, subtitulo: m.contemplacao, oracaoTexto: ORACOES_TEXTO.paiNosso });
-    seq.push({ titulo: '10 Ave Marias', subtitulo: m.titulo, oracaoTexto: ORACOES_TEXTO.aveMaria, avesTotal: 10 });
+    seq.push({ titulo: `Pai Nosso — ${m.titulo}`, subtitulo: m.contemplacao, oracaoTexto: texto('pai-nosso'), audioMisterioIndex: i });
+    seq.push({ titulo: '10 Ave Marias', subtitulo: m.titulo, oracaoTexto: texto('ave-maria'), audioId: 'ave-maria', avesTotal: 10 });
   });
-  seq.push({ titulo: 'Salve Rainha', oracaoTexto: ORACOES_TEXTO.salveRainha });
+  seq.push({ titulo: 'Salve Rainha', oracaoTexto: texto('salve-rainha'), audioId: 'salve-rainha' });
   seq.push({ titulo: 'Terço concluído 🙏', subtitulo: 'Que Nossa Senhora interceda por você hoje.', final: true });
   return seq;
 }
@@ -42,20 +34,27 @@ function gerarSequenciaDeNomes() {
   return nomes; // 61 nomes
 }
 
-const MS_POR_PALAVRA = 480;    // ritmo mais pausado, contemplativo
-const PAUSA_APOS_TEXTO = 1800; // respiro maior antes de avançar sozinho
+const MS_POR_PALAVRA = 480;    // ritmo mais pausado, contemplativo (usado quando não há áudio gravado)
+const PAUSA_APOS_TEXTO = 1800; // respiro antes de avançar sozinho (sem áudio)
 
 export async function montarContadorTerco(container, conjunto) {
-  const sequencia = construirSequencia(conjunto);
-  const nomesContas = gerarSequenciaDeNomes();
+  const [respMascaras, respOracoes] = await Promise.all([
+    fetch('../data/mascaras-posicoes.json'),
+    fetch('../data/oracoes.json'),
+  ]);
+  const posicoes = await respMascaras.json();
+  const oracoesData = await respOracoes.json();
+  const oracoesPorId = {};
+  oracoesData.oracoes.forEach(o => { oracoesPorId[o.id] = o; });
 
-  const resp = await fetch('../data/mascaras-posicoes.json');
-  const posicoes = await resp.json();
+  const sequencia = construirSequencia(conjunto, oracoesPorId);
+  const nomesContas = gerarSequenciaDeNomes();
 
   let passoAtual = 0;
   let avesFeitas = 0;
   let autoPlayAtivo = true;
   let comecou = false;
+  let vozAtual = 'ele';
   let timerAuto = null;
   let intervalDigitando = null;
 
@@ -76,6 +75,10 @@ export async function montarContadorTerco(container, conjunto) {
       <p class="contador-terco__toque-aviso">👆 Toque pra começar — depois é só acompanhar</p>
       <div class="contador-terco__cabecalho">
         <p class="contador-terco__passo-num"></p>
+        <div class="contador-terco__vozes">
+          <button class="contador-terco__voz ativa" data-voz="ele" type="button">🙋‍♂️ Ele</button>
+          <button class="contador-terco__voz" data-voz="ela" type="button">🙋‍♀️ Ela</button>
+        </div>
         <button class="contador-terco__pausar" type="button">⏸ Pausar</button>
       </div>
       <h3 class="contador-terco__titulo"></h3>
@@ -94,6 +97,13 @@ export async function montarContadorTerco(container, conjunto) {
   const oracaoEl = container.querySelector('.contador-terco__oracao');
   const btnAvancar = container.querySelector('.contador-terco__avancar');
   const btnPausar = container.querySelector('.contador-terco__pausar');
+  const botoesVoz = container.querySelectorAll('.contador-terco__voz');
+
+  const audioEl = new Audio();
+  audioEl.preload = 'auto';
+  audioEl.addEventListener('ended', () => {
+    if (autoPlayAtivo && comecou && !sequencia[passoAtual].final) avancar();
+  });
 
   overlay.innerHTML = nomesContas.map((nome, i) => {
     const p = posicoes[nome];
@@ -101,6 +111,17 @@ export async function montarContadorTerco(container, conjunto) {
     return `<div class="bead-fx" data-i="${i}" style="left:${p.left}%; top:${p.top}%; width:${p.width}%; height:${p.height}%; -webkit-mask-image:url(../img/mascaras/${nome}.png); mask-image:url(../img/mascaras/${nome}.png);"></div>`;
   }).join('');
   const beadEls = overlay.querySelectorAll('.bead-fx');
+
+  function getAudioSrc(passo) {
+    const campo = vozAtual === 'ele' ? 'audio_ele' : 'audio_ela';
+    if (passo.audioMisterioIndex !== undefined) {
+      return conjunto.misterios[passo.audioMisterioIndex]?.[campo] || null;
+    }
+    if (passo.audioId) {
+      return oracoesPorId[passo.audioId]?.[campo] || null;
+    }
+    return null;
+  }
 
   function contaGlobalAtual() {
     if (passoAtual >= sequencia.length - 2) return totalContas;
@@ -118,12 +139,12 @@ export async function montarContadorTerco(container, conjunto) {
   function pararTudo() {
     if (timerAuto) { clearTimeout(timerAuto); timerAuto = null; }
     if (intervalDigitando) { clearInterval(intervalDigitando); intervalDigitando = null; }
+    audioEl.pause();
   }
 
   // texto "sumindo": caixa de altura fixa, rola internamente (tipo teleprompter)
   // em vez de crescer e empurrar o resto da página pra cima.
   function digitar(texto, aoTerminar) {
-    pararTudo();
     oracaoEl.textContent = '';
     oracaoEl.classList.add('digitando');
     if (!texto) { oracaoEl.classList.remove('digitando'); if (aoTerminar) aoTerminar(); return; }
@@ -144,6 +165,7 @@ export async function montarContadorTerco(container, conjunto) {
   }
 
   function render() {
+    pararTudo();
     const passo = sequencia[passoAtual];
     passoNumEl.textContent = passo.final ? '' : `Conta ${Math.min(contaGlobalAtual() + 1, totalContas)} de ${totalContas}`;
     tituloEl.textContent = passo.titulo;
@@ -155,11 +177,21 @@ export async function montarContadorTerco(container, conjunto) {
     }
     renderOverlay();
 
+    const audioSrc = getAudioSrc(passo);
+
     digitar(passo.oracaoTexto, () => {
-      if (autoPlayAtivo && !passo.final) {
+      // só agenda avanço pelo tempo de leitura quando NÃO tem áudio —
+      // com áudio, quem manda avançar é o fim da gravação (evento 'ended')
+      if (autoPlayAtivo && !passo.final && !audioSrc) {
         timerAuto = setTimeout(avancar, PAUSA_APOS_TEXTO);
       }
     });
+
+    if (audioSrc) {
+      audioEl.src = audioSrc;
+      audioEl.currentTime = 0;
+      audioEl.play().catch(() => { /* autoplay pode ser bloqueado até 1º toque do usuário */ });
+    }
   }
 
   async function avancar() {
@@ -167,7 +199,7 @@ export async function montarContadorTerco(container, conjunto) {
 
     if (!comecou) {
       comecou = true;
-      render(); // primeiro toque só começa a digitar o passo atual, não avança
+      render(); // primeiro toque só começa o passo atual, não avança
       return;
     }
 
@@ -195,19 +227,33 @@ export async function montarContadorTerco(container, conjunto) {
 
   btnAvancar.addEventListener('click', avancar);
   caixa.addEventListener('click', avancar);
+
+  botoesVoz.forEach(btn => {
+    btn.addEventListener('click', () => {
+      vozAtual = btn.dataset.voz;
+      botoesVoz.forEach(b => b.classList.toggle('ativa', b === btn));
+      if (comecou) render(); // troca a voz e já reinicia o passo atual com o novo áudio
+    });
+  });
+
   btnPausar.addEventListener('click', () => {
     autoPlayAtivo = !autoPlayAtivo;
     btnPausar.textContent = autoPlayAtivo ? '⏸ Pausar' : '▶ Continuar sozinho';
-    if (autoPlayAtivo && comecou && !intervalDigitando && !sequencia[passoAtual].final) {
-      timerAuto = setTimeout(avancar, PAUSA_APOS_TEXTO);
-    } else if (!autoPlayAtivo && timerAuto) {
-      clearTimeout(timerAuto);
-      timerAuto = null;
+    if (!autoPlayAtivo) {
+      if (timerAuto) { clearTimeout(timerAuto); timerAuto = null; }
+      audioEl.pause();
+    } else if (comecou && !sequencia[passoAtual].final) {
+      const audioSrc = getAudioSrc(sequencia[passoAtual]);
+      if (audioSrc && audioEl.src && !audioEl.ended) {
+        audioEl.play().catch(() => {});
+      } else if (!audioSrc && !intervalDigitando) {
+        timerAuto = setTimeout(avancar, PAUSA_APOS_TEXTO);
+      }
     }
   });
 
   // estado inicial: mostra o crucifixo e o título do primeiro passo,
-  // mas NÃO começa a digitar/avançar sozinho até o primeiro toque.
+  // mas NÃO começa a digitar/avançar/tocar áudio até o primeiro toque.
   renderOverlay();
   passoNumEl.textContent = `Conta 1 de ${totalContas}`;
   tituloEl.textContent = sequencia[0].titulo;

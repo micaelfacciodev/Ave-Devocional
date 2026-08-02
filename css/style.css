@@ -270,7 +270,14 @@ nav{
 
 .contador-terco__toque-aviso{font-family:'Inter',sans-serif; font-size:.78rem; color:var(--wine); opacity:.75; margin-bottom:14px;}
 
-.contador-terco__cabecalho{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:10px;}
+.contador-terco__cabecalho{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:10px; flex-wrap:wrap;}
+.contador-terco__vozes{display:flex; gap:6px;}
+.contador-terco__voz{
+  font-family:'Inter',sans-serif; font-size:.72rem; font-weight:600;
+  background:transparent; border:1px solid rgba(122,46,59,.3); color:var(--wine);
+  padding:5px 10px; border-radius:12px; cursor:pointer; opacity:.55; transition:opacity .2s, background .2s;
+}
+.contador-terco__voz.ativa{opacity:1; background:rgba(122,46,59,.1);}
 .contador-terco__pausar{
   font-family:'Inter',sans-serif; font-size:.72rem; font-weight:600; letter-spacing:.03em;
   background:transparent; border:1px solid rgba(122,46,59,.3); color:var(--wine);
