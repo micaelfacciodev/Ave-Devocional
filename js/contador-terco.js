@@ -20,56 +20,63 @@ function construirSequencia(conjunto) {
 }
 
 /**
- * ESTIMATIVA VISUAL das posições — não é pixel-perfeito.
- * Pra calibrar de verdade: abra /terco/calibrar.html, clique nas 72 contas
- * na ordem da oração, copie o JSON gerado e substitua o array ANCORAS abaixo
- * (pode colar as 72 direto em vez de âncoras, ajustando gerarGeometria).
- * Formato de cada âncora: [x%, y%] relativo à foto (0-100).
+ * Coordenadas reais, extraídas das layers do PSD que você mandou
+ * (posição central de cada conta, em % da foto). Nada de estimativa
+ * visual aqui — veio direto do arquivo.
  */
-const ANCORAS = [
-  [18, 92], [34, 85], [50, 74], [72, 72], [93, 66],
-  [94, 42], [85, 20], [60, 5], [33, 4], [12, 15],
-  [4, 40], [10, 60], [30, 58], [55, 50], [78, 48], [88, 56],
-];
-
-function catmullRom(p0, p1, p2, p3, t) {
-  const t2 = t * t, t3 = t2 * t;
-  const x = 0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3);
-  const y = 0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3);
-  return [x, y];
-}
-
-function interpolarAncoras(ancoras, totalPontos) {
-  const pts = [ancoras[0], ...ancoras, ancoras[ancoras.length - 1]];
-  const segmentos = ancoras.length - 1;
-  const resultado = [];
-  for (let i = 0; i < totalPontos; i++) {
-    const g = (i / (totalPontos - 1)) * segmentos;
-    const seg = Math.min(Math.floor(g), segmentos - 1);
-    const t = g - seg;
-    const p0 = pts[seg], p1 = pts[seg + 1], p2 = pts[seg + 2], p3 = pts[seg + 3];
-    resultado.push(catmullRom(p0, p1, p2, p3, t));
-  }
-  return resultado;
-}
+const POSICOES = {
+  crucifixo: [20.1, 85.82],
+  medalha: [78.85, 72.92],
+  conta1: [32.42, 69.5], conta2: [47.77, 73.38], conta3: [53.24, 78.2], conta4: [57.53, 83.35],
+  conta5: [73.92, 85.55], conta6: [75.14, 60.98], conta7: [67.44, 58.13], conta8: [59.26, 55.9],
+  conta9: [51.73, 53.4], conta10: [43.7, 51.65], conta11: [35.73, 49.23], conta12: [29.36, 45.77],
+  conta13: [22.15, 43.0], conta14: [20.53, 37.25], conta15: [27.7, 33.52], conta16: [41.07, 36.9],
+  conta17: [54.18, 43.08], conta18: [61.64, 45.9], conta19: [69.67, 48.2], conta20: [77.41, 50.68],
+  conta21: [86.74, 50.05], conta22: [93.23, 45.65], conta23: [92.98, 40.02], conta24: [92.9, 34.5],
+  conta25: [89.7, 29.75], conta26: [85.95, 25.2], conta27: [79.29, 16.55], conta28: [69.38, 9.47],
+  conta29: [62.61, 6.75], conta30: [55.84, 4.28], conta31: [48.02, 3.5], conta32: [40.06, 3.17],
+  conta33: [32.06, 3.75], conta34: [25.79, 7.25], conta35: [28.82, 12.0], conta36: [36.46, 13.43],
+  conta37: [44.6, 14.07], conta38: [58.21, 17.0], conta39: [71.04, 23.2], conta40: [77.2, 26.62],
+  conta41: [77.7, 32.35], conta42: [70.86, 36.05], conta43: [62.0, 35.9], conta44: [54.11, 34.1],
+  conta45: [46.97, 31.65], conta46: [40.17, 28.8], conta47: [32.78, 26.4], conta48: [25.14, 24.4],
+  conta49: [11.64, 25.07], conta50: [6.3, 33.67], conta51: [7.67, 38.57], conta52: [8.57, 43.9],
+  conta53: [13.65, 48.33], conta54: [20.28, 51.8], conta55: [27.05, 55.02], conta56: [35.34, 56.85],
+  conta57: [43.34, 59.23], conta58: [51.33, 61.88], conta59: [59.55, 63.98],
+};
 
 /**
- * Se você já calibrou (via /terco/calibrar.html), cole aqui o array de
- * 72 pares [x,y] copiado da ferramenta, e troque a chamada abaixo:
- * const pontos = COORDENADAS_CALIBRADAS;  em vez de interpolarAncoras(...)
+ * Mapeia cada um dos 72 "toques" da oração pra uma conta FÍSICA real.
+ * Estrutura real de um terço de 59 contas: crucifixo → 1 grande + 3 pequenas
+ * (intro) → medalha (Glória) → 5 dezenas de 11 contas (1 grande + 10 pequenas,
+ * sem conta própria pra Glória — ela é dita na transição, reaproveita a
+ * última conta da dezena).
  */
 function gerarGeometria() {
-  const pontos = interpolarAncoras(ANCORAS, 72);
-  return pontos.map(([xPct, yPct], i) => {
-    let tipo = 'pequena';
-    if (i === 0) tipo = 'crucifixo';
-    else if (i === 6) tipo = 'medalha';
-    else {
-      const posLoop = (i - 7) % 13;
-      if (posLoop === 0 || posLoop === 1 || posLoop === 12) tipo = 'grande';
+  const geo = [];
+  geo.push({ ...pos('crucifixo'), tipo: 'crucifixo' }); // Sinal da Cruz
+  geo.push({ ...pos('crucifixo'), tipo: 'crucifixo' }); // Credo
+  geo.push({ ...pos('conta1'), tipo: 'grande' });        // Pai Nosso intro
+  geo.push({ ...pos('conta2'), tipo: 'pequena' });
+  geo.push({ ...pos('conta3'), tipo: 'pequena' });
+  geo.push({ ...pos('conta4'), tipo: 'pequena' });
+  geo.push({ ...pos('medalha'), tipo: 'medalha' });       // Glória intro
+
+  let n = 5;
+  for (let d = 0; d < 5; d++) {
+    geo.push({ ...pos(`conta${n}`), tipo: 'grande' });    // anúncio do mistério (reaproveita a conta do PN)
+    geo.push({ ...pos(`conta${n}`), tipo: 'grande' });    // Pai Nosso da dezena
+    for (let a = 1; a <= 10; a++) {
+      geo.push({ ...pos(`conta${n + a}`), tipo: 'pequena' }); // 10 Ave Marias
     }
-    return { xPct, yPct, tipo };
-  });
+    geo.push({ ...pos(`conta${n + 10}`), tipo: 'pequena' }); // Glória (reaproveita a última Ave)
+    n += 11;
+  }
+  return geo;
+
+  function pos(nome) {
+    const [xPct, yPct] = POSICOES[nome];
+    return { xPct, yPct };
+  }
 }
 
 export function montarContadorTerco(container, conjunto) {
@@ -117,9 +124,9 @@ export function montarContadorTerco(container, conjunto) {
     overlay.innerHTML = geometria.map((b, i) => {
       const feito = i < atual;
       const ehAtual = i === atual;
-      const raio = b.tipo === 'crucifixo' ? 4.2 : b.tipo === 'medalha' ? 3.6 : b.tipo === 'grande' ? 2.6 : 2;
+      const raio = b.tipo === 'crucifixo' ? 5.2 : b.tipo === 'medalha' ? 4.6 : b.tipo === 'grande' ? 3.4 : 2.8;
       const classe = `bead-fx ${feito ? 'feita' : ''} ${ehAtual ? 'atual' : ''}`;
-      const glow = ehAtual ? `<circle class="bead-fx-glow" cx="${b.xPct}" cy="${b.yPct}" r="${raio + 2}"/>` : '';
+      const glow = ehAtual ? `<circle class="bead-fx-glow" cx="${b.xPct}" cy="${b.yPct}" r="${raio + 1.5}"/>` : '';
       return `${glow}<circle class="${classe}" cx="${b.xPct}" cy="${b.yPct}" r="${raio}"/>`;
     }).join('');
   }
