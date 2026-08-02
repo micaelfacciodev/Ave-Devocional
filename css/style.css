@@ -257,12 +257,16 @@ nav{
 .rosario-foto{width:100%; height:auto; display:block; user-select:none; -webkit-user-drag:none;}
 .rosario-overlay{position:absolute; inset:0; width:100%; height:100%;}
 
-.bead-fx{fill:transparent; stroke:none; transition:fill .25s;}
-.bead-fx.feita{fill:rgba(122,46,59,.38);}
-.bead-fx.atual{fill:rgba(224,190,85,.55);}
-.bead-fx-glow{fill:none; stroke:var(--gold-bright); stroke-width:.6; opacity:.8; animation:pulsa-brilho-foto 1.1s ease-in-out infinite;}
-@keyframes pulsa-brilho-foto{0%,100%{opacity:.4; r:5;}50%{opacity:.9; r:7;}}
-@media (prefers-reduced-motion: reduce){.bead-fx-glow{animation:none;}}
+.bead-fx{
+  position:absolute; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-size:100% 100%; mask-size:100% 100%;
+  background-color:var(--gold); opacity:0; transition:opacity .25s, background-color .25s;
+  pointer-events:none;
+}
+.bead-fx.feita{opacity:.5;}
+.bead-fx.atual{opacity:.8; background-color:var(--gold-bright); animation:pulsa-brilho-foto 1.1s ease-in-out infinite;}
+@keyframes pulsa-brilho-foto{0%,100%{opacity:.55;}50%{opacity:.95;}}
+@media (prefers-reduced-motion: reduce){.bead-fx.atual{animation:none;}}
 
 .contador-terco__toque-aviso{font-family:'Inter',sans-serif; font-size:.78rem; color:var(--wine); opacity:.75; margin-bottom:14px;}
 
