@@ -15,9 +15,11 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
-  background:
-    radial-gradient(ellipse 120% 60% at 50% -10%, var(--night-edge) 0%, var(--night-mid) 45%, var(--night-deep) 100%);
+  background-color:var(--night-deep);
+  background-image:
+    radial-gradient(ellipse 160% 60% at 50% -10%, var(--night-edge) 0%, var(--night-mid) 45%, var(--night-deep) 100%);
   background-attachment:fixed;
+  background-repeat:no-repeat;
   color:var(--parchment);
   font-family:'Crimson Pro', serif;
   min-height:100vh;
