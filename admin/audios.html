@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Upload de Áudios | Ave</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css?v=2">
+<style>
+  .admin-wrap{max-width:760px; margin:0 auto; padding:40px 24px 100px; position:relative; z-index:1;}
+  .admin-titulo{font-family:'Cinzel',serif; font-size:1.6rem; color:var(--gold-bright); margin-bottom:6px;}
+  .admin-sub{font-family:'Inter',sans-serif; font-size:.85rem; color:var(--parchment-dim); opacity:.75; margin-bottom:34px;}
+  .bloqueio{
+    background:rgba(255,255,255,.03); border:1px solid rgba(201,162,39,.25); border-radius:4px;
+    padding:40px; text-align:center;
+  }
+  .bloqueio button{
+    margin-top:16px; display:inline-flex; align-items:center; gap:10px; padding:12px 22px;
+    background:var(--parchment); color:var(--ink); border:none; border-radius:2px; cursor:pointer;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:.85rem;
+  }
+  .secao-titulo{
+    font-family:'Cinzel',serif; font-size:1.1rem; color:var(--gold-bright);
+    margin:36px 0 14px; padding-bottom:8px; border-bottom:1px solid rgba(201,162,39,.25);
+  }
+  .item{
+    background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:3px;
+    padding:16px 18px; margin-bottom:10px;
+  }
+  .item-titulo{font-family:'Crimson Pro',serif; font-size:1.05rem; color:var(--parchment); margin-bottom:10px;}
+  .item-vozes{display:flex; gap:14px; flex-wrap:wrap;}
+  .voz-slot{flex:1; min-width:230px; background:rgba(0,0,0,.15); border-radius:3px; padding:10px 12px;}
+  .voz-label{font-family:'Inter',sans-serif; font-size:.72rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; display:flex; align-items:center; gap:6px;}
+  .status-dot{width:8px; height:8px; border-radius:50%; background:#7a5252; display:inline-block;}
+  .status-dot.ok{background:#5fa86a;}
+  .voz-slot input[type="file"]{
+    font-family:'Inter',sans-serif; font-size:.72rem; color:var(--parchment-dim); width:100%; margin-bottom:8px;
+  }
+  .voz-slot button{
+    font-family:'Inter',sans-serif; font-size:.72rem; font-weight:600; padding:7px 14px;
+    background:var(--wine); color:var(--parchment); border:none; border-radius:2px; cursor:pointer;
+  }
+  .voz-slot button:disabled{opacity:.4; cursor:not-allowed;}
+  .voz-status{font-family:'Inter',sans-serif; font-size:.7rem; margin-top:6px; color:var(--parchment-dim); opacity:.8; word-break:break-all;}
+  .voz-status.erro{color:#e08a8a;}
+  .voz-status a{color:var(--gold-bright);}
+
+  .resumo{
+    margin-top:40px; background:rgba(201,162,39,.06); border:1px solid rgba(201,162,39,.3);
+    border-radius:4px; padding:18px 20px;
+  }
+  .resumo h3{font-family:'Cinzel',serif; font-size:1rem; color:var(--gold-bright); margin-bottom:10px;}
+  .resumo p{font-family:'Inter',sans-serif; font-size:.78rem; color:var(--parchment-dim); opacity:.8; margin-bottom:10px; line-height:1.6;}
+  .resumo textarea{
+    width:100%; height:160px; font-family:monospace; font-size:.72rem; background:#0a0f1f; color:#a8d9a8;
+    border:1px solid rgba(255,255,255,.15); border-radius:3px; padding:10px; box-sizing:border-box;
+  }
+  .resumo button{
+    margin-top:10px; font-family:'Inter',sans-serif; font-size:.78rem; font-weight:600; padding:8px 16px;
+    background:var(--gold); color:var(--ink); border:none; border-radius:2px; cursor:pointer;
+  }
+  #areaPrincipal[hidden], .bloqueio[hidden]{display:none;}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+
+<nav>
+  <a class="brand" href="../">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.8 8.6 L20 9.5 L15.2 14 L16.6 20.5 L12 17 L7.4 20.5 L8.8 14 L4 9.5 L10.2 8.6 Z" fill="currentColor" opacity="0.9"/></svg>
+    Ave — Admin
+  </a>
+</nav>
+
+<div class="admin-wrap">
+  <h1 class="admin-titulo">🎙️ Upload de Áudios</h1>
+  <p class="admin-sub">Envia os arquivos direto pro Supabase Storage, já com o nome certo. Depois de subir tudo, copia o resumo no fim da página e me manda no chat.</p>
+
+  <div class="bloqueio" id="bloqueio">
+    <p style="font-family:'Inter',sans-serif; color:var(--parchment-dim); margin-bottom:6px;">Área restrita — entra com o mesmo Google da conta do site.</p>
+    <button id="btnEntrar">Entrar com Google</button>
+  </div>
+
+  <div id="areaPrincipal" hidden>
+    <div id="listaOracoes"></div>
+    <div id="listaMisterios"></div>
+
+    <div class="resumo">
+      <h3>📋 Resumo pra atualizar os JSONs</h3>
+      <p>Cada upload bem-sucedido adiciona uma linha aqui. No fim, copia tudo e cola no chat — eu atualizo <code>data/oracoes.json</code> e <code>data/misterios.json</code> com essas URLs.</p>
+      <textarea id="resumoTexto" readonly placeholder="Ainda nada enviado."></textarea>
+      <button id="btnCopiarResumo">📋 Copiar resumo</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { supabase, getUsuarioAtual, entrarComGoogle, onAuthChange } from '../js/supabase-client.js';
+
+  const BUCKET = 'oracoes';
+  const bloqueio = document.getElementById('bloqueio');
+  const areaPrincipal = document.getElementById('areaPrincipal');
+  const listaOracoesEl = document.getElementById('listaOracoes');
+  const listaMisteriosEl = document.getElementById('listaMisterios');
+  const resumoTexto = document.getElementById('resumoTexto');
+
+  document.getElementById('btnEntrar').addEventListener('click', () => entrarComGoogle());
+  document.getElementById('btnCopiarResumo').addEventListener('click', () => {
+    resumoTexto.select();
+    document.execCommand('copy');
+    alert('Copiado! Cola no chat com a Claude.');
+  });
+
+  const linhasResumo = [];
+  function adicionarAoResumo(linha) {
+    linhasResumo.push(linha);
+    resumoTexto.value = linhasResumo.join('\n');
+  }
+
+  async function subirArquivo(id, voz, file, statusEl, botao) {
+    botao.disabled = true;
+    statusEl.textContent = 'Enviando...';
+    statusEl.classList.remove('erro');
+    const nomeArquivo = `${id}-${voz}.mp3`;
+    try {
+      const { error } = await supabase.storage.from(BUCKET).upload(nomeArquivo, file, {
+        upsert: true,
+        contentType: file.type || 'audio/mpeg',
+      });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(nomeArquivo);
+      statusEl.innerHTML = `✅ <a href="${urlData.publicUrl}" target="_blank">${nomeArquivo}</a>`;
+      adicionarAoResumo(`${id} · ${voz === 'ele' ? 'audio_ele' : 'audio_ela'}: "${urlData.publicUrl}"`);
+      const dot = botao.closest('.voz-slot').querySelector('.status-dot');
+      if (dot) dot.classList.add('ok');
+    } catch (e) {
+      statusEl.textContent = '❌ Erro: ' + e.message;
+      statusEl.classList.add('erro');
+    } finally {
+      botao.disabled = false;
+    }
+  }
+
+  function montarSlot(id, voz, jaTemAudio) {
+    const div = document.createElement('div');
+    div.className = 'voz-slot';
+    const label = voz === 'ele' ? '🙋‍♂️ Voz dele' : '🙋‍♀️ Voz dela';
+    div.innerHTML = `
+      <div class="voz-label"><span class="status-dot ${jaTemAudio ? 'ok' : ''}"></span> ${label}</div>
+      <input type="file" accept="audio/*" />
+      <button type="button">Enviar</button>
+      <div class="voz-status"></div>
+    `;
+    const input = div.querySelector('input');
+    const botao = div.querySelector('button');
+    const statusEl = div.querySelector('.voz-status');
+    botao.addEventListener('click', () => {
+      if (!input.files[0]) { statusEl.textContent = 'Escolhe um arquivo primeiro.'; return; }
+      subirArquivo(id, voz, input.files[0], statusEl, botao);
+    });
+    return div;
+  }
+
+  function montarItem(id, titulo, jaTemEle, jaTemEla) {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `<div class="item-titulo">${titulo}</div><div class="item-vozes"></div>`;
+    const vozesDiv = div.querySelector('.item-vozes');
+    vozesDiv.appendChild(montarSlot(id, 'ele', jaTemEle));
+    vozesDiv.appendChild(montarSlot(id, 'ela', jaTemEla));
+    return div;
+  }
+
+  async function carregarListas() {
+    const [respOracoes, respMisterios] = await Promise.all([
+      fetch('../data/oracoes.json'),
+      fetch('../data/misterios.json'),
+    ]);
+    const oracoesData = await respOracoes.json();
+    const misteriosData = await respMisterios.json();
+
+    const secaoOracoes = document.createElement('h2');
+    secaoOracoes.className = 'secao-titulo';
+    secaoOracoes.textContent = 'Orações fixas';
+    listaOracoesEl.appendChild(secaoOracoes);
+    oracoesData.oracoes.forEach(o => {
+      listaOracoesEl.appendChild(montarItem(o.id, o.titulo, !!o.audio_ele, !!o.audio_ela));
+    });
+
+    Object.entries(misteriosData.conjuntos).forEach(([chave, conjunto]) => {
+      const secao = document.createElement('h2');
+      secao.className = 'secao-titulo';
+      secao.textContent = conjunto.nome;
+      listaMisteriosEl.appendChild(secao);
+      conjunto.misterios.forEach((m, i) => {
+        const id = `${chave}-${i}`;
+        listaMisteriosEl.appendChild(montarItem(id, m.titulo, !!m.audio_ele, !!m.audio_ela));
+      });
+    });
+  }
+
+  async function atualizarAcesso(usuario) {
+    if (usuario) {
+      bloqueio.hidden = true;
+      areaPrincipal.hidden = false;
+      if (!areaPrincipal.dataset.carregado) {
+        areaPrincipal.dataset.carregado = '1';
+        await carregarListas();
+      }
+    } else {
+      bloqueio.hidden = false;
+      areaPrincipal.hidden = true;
+    }
+  }
+
+  getUsuarioAtual().then(atualizarAcesso);
+  onAuthChange(atualizarAcesso);
+</script>
+
+</body>
+</html>

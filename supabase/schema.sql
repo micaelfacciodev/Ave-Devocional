@@ -74,3 +74,22 @@ create policy "qualquer um pode se inscrever"
   with check (true);
 -- leitura fica bloqueada por padrão (sem policy de select) —
 -- só acessível via service_role no backend/admin.
+
+
+-- Storage: bucket 'oracoes' (crie manualmente em Storage → New bucket → Public,
+-- se ainda não existir). As policies abaixo liberam upload só pra quem estiver
+-- logado (qualquer conta Google autenticada) — o admin hub usa o mesmo login.
+drop policy if exists "leitura publica do bucket oracoes" on storage.objects;
+create policy "leitura publica do bucket oracoes"
+  on storage.objects for select
+  using (bucket_id = 'oracoes');
+
+drop policy if exists "upload autenticado no bucket oracoes" on storage.objects;
+create policy "upload autenticado no bucket oracoes"
+  on storage.objects for insert
+  with check (bucket_id = 'oracoes' and auth.role() = 'authenticated');
+
+drop policy if exists "atualizacao autenticada no bucket oracoes" on storage.objects;
+create policy "atualizacao autenticada no bucket oracoes"
+  on storage.objects for update
+  using (bucket_id = 'oracoes' and auth.role() = 'authenticated');
