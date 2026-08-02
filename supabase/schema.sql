@@ -87,9 +87,9 @@ create policy "leitura publica do bucket oracoes"
 drop policy if exists "upload autenticado no bucket oracoes" on storage.objects;
 create policy "upload autenticado no bucket oracoes"
   on storage.objects for insert
-  with check (bucket_id = 'oracoes' and auth.role() = 'authenticated');
+  with check (bucket_id = 'oracoes' and (auth.jwt() ->> 'email') = 'micaelfacciodev@gmail.com');
 
 drop policy if exists "atualizacao autenticada no bucket oracoes" on storage.objects;
 create policy "atualizacao autenticada no bucket oracoes"
   on storage.objects for update
-  using (bucket_id = 'oracoes' and auth.role() = 'authenticated');
+  using (bucket_id = 'oracoes' and (auth.jwt() ->> 'email') = 'micaelfacciodev@gmail.com');

@@ -100,6 +100,7 @@
   import { supabase, getUsuarioAtual, entrarComGoogle, onAuthChange } from '../js/supabase-client.js';
 
   const BUCKET = 'oracoes';
+  const EMAIL_AUTORIZADO = 'micaelfacciodev@gmail.com';
   const bloqueio = document.getElementById('bloqueio');
   const areaPrincipal = document.getElementById('areaPrincipal');
   const listaOracoesEl = document.getElementById('listaOracoes');
@@ -202,13 +203,17 @@
   }
 
   async function atualizarAcesso(usuario) {
-    if (usuario) {
+    if (usuario && usuario.email === EMAIL_AUTORIZADO) {
       bloqueio.hidden = true;
       areaPrincipal.hidden = false;
       if (!areaPrincipal.dataset.carregado) {
         areaPrincipal.dataset.carregado = '1';
         await carregarListas();
       }
+    } else if (usuario) {
+      bloqueio.hidden = false;
+      areaPrincipal.hidden = true;
+      bloqueio.innerHTML = `<p style="font-family:'Inter',sans-serif; color:var(--parchment-dim);">Essa conta (${usuario.email}) não tem acesso a essa área.</p>`;
     } else {
       bloqueio.hidden = false;
       areaPrincipal.hidden = true;
