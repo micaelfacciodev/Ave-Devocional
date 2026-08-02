@@ -42,8 +42,8 @@ function gerarSequenciaDeNomes() {
   return nomes; // 61 nomes
 }
 
-const MS_POR_PALAVRA = 340;   // ritmo de leitura contemplativa
-const PAUSA_APOS_TEXTO = 900; // respiro antes de avançar sozinho
+const MS_POR_PALAVRA = 480;    // ritmo mais pausado, contemplativo
+const PAUSA_APOS_TEXTO = 1800; // respiro maior antes de avançar sozinho
 
 export async function montarContadorTerco(container, conjunto) {
   const sequencia = construirSequencia(conjunto);
@@ -55,6 +55,7 @@ export async function montarContadorTerco(container, conjunto) {
   let passoAtual = 0;
   let avesFeitas = 0;
   let autoPlayAtivo = true;
+  let comecou = false;
   let timerAuto = null;
   let intervalDigitando = null;
 
@@ -72,15 +73,15 @@ export async function montarContadorTerco(container, conjunto) {
         <img src="../img/rosario.webp" class="rosario-foto" alt="Rosário" draggable="false" />
         <div class="rosario-overlay"></div>
       </div>
-      <p class="contador-terco__toque-aviso">👆 Toque a qualquer momento pra adiantar — ou deixe rodar sozinho</p>
+      <p class="contador-terco__toque-aviso">👆 Toque pra começar — depois é só acompanhar</p>
       <div class="contador-terco__cabecalho">
         <p class="contador-terco__passo-num"></p>
         <button class="contador-terco__pausar" type="button">⏸ Pausar</button>
       </div>
       <h3 class="contador-terco__titulo"></h3>
       <p class="contador-terco__subtitulo"></p>
-      <p class="contador-terco__oracao"></p>
-      <button class="btn btn-primary contador-terco__avancar" type="button"></button>
+      <div class="contador-terco__oracao-box"><p class="contador-terco__oracao"></p></div>
+      <button class="btn btn-primary contador-terco__avancar" type="button">Toque pra começar</button>
     </div>
   `;
 
@@ -89,6 +90,7 @@ export async function montarContadorTerco(container, conjunto) {
   const passoNumEl = container.querySelector('.contador-terco__passo-num');
   const tituloEl = container.querySelector('.contador-terco__titulo');
   const subtituloEl = container.querySelector('.contador-terco__subtitulo');
+  const oracaoBox = container.querySelector('.contador-terco__oracao-box');
   const oracaoEl = container.querySelector('.contador-terco__oracao');
   const btnAvancar = container.querySelector('.contador-terco__avancar');
   const btnPausar = container.querySelector('.contador-terco__pausar');
@@ -118,6 +120,8 @@ export async function montarContadorTerco(container, conjunto) {
     if (intervalDigitando) { clearInterval(intervalDigitando); intervalDigitando = null; }
   }
 
+  // texto "sumindo": caixa de altura fixa, rola internamente (tipo teleprompter)
+  // em vez de crescer e empurrar o resto da página pra cima.
   function digitar(texto, aoTerminar) {
     pararTudo();
     oracaoEl.textContent = '';
@@ -134,6 +138,7 @@ export async function montarContadorTerco(container, conjunto) {
         return;
       }
       oracaoEl.textContent += (i === 0 ? '' : ' ') + palavras[i];
+      oracaoBox.scrollTop = oracaoBox.scrollHeight; // rola pra baixo, caixa não cresce
       i++;
     }, MS_POR_PALAVRA);
   }
@@ -143,10 +148,11 @@ export async function montarContadorTerco(container, conjunto) {
     passoNumEl.textContent = passo.final ? '' : `Conta ${Math.min(contaGlobalAtual() + 1, totalContas)} de ${totalContas}`;
     tituloEl.textContent = passo.titulo;
     subtituloEl.textContent = passo.subtitulo || '';
-    btnAvancar.textContent = passo.avesTotal
-      ? `Ave Maria (${avesFeitas}/${passo.avesTotal}) · tocar pra adiantar`
-      : (passo.final ? 'Concluir' : 'Tocar pra adiantar');
-    btnAvancar.hidden = false;
+    if (comecou) {
+      btnAvancar.textContent = passo.avesTotal
+        ? `Ave Maria (${avesFeitas}/${passo.avesTotal}) · tocar pra adiantar`
+        : (passo.final ? 'Concluir' : 'Tocar pra adiantar');
+    }
     renderOverlay();
 
     digitar(passo.oracaoTexto, () => {
@@ -158,6 +164,13 @@ export async function montarContadorTerco(container, conjunto) {
 
   async function avancar() {
     pararTudo();
+
+    if (!comecou) {
+      comecou = true;
+      render(); // primeiro toque só começa a digitar o passo atual, não avança
+      return;
+    }
+
     const passo = sequencia[passoAtual];
     if (passo.avesTotal) {
       avesFeitas++;
@@ -185,7 +198,7 @@ export async function montarContadorTerco(container, conjunto) {
   btnPausar.addEventListener('click', () => {
     autoPlayAtivo = !autoPlayAtivo;
     btnPausar.textContent = autoPlayAtivo ? '⏸ Pausar' : '▶ Continuar sozinho';
-    if (autoPlayAtivo && !intervalDigitando && !sequencia[passoAtual].final) {
+    if (autoPlayAtivo && comecou && !intervalDigitando && !sequencia[passoAtual].final) {
       timerAuto = setTimeout(avancar, PAUSA_APOS_TEXTO);
     } else if (!autoPlayAtivo && timerAuto) {
       clearTimeout(timerAuto);
@@ -193,5 +206,10 @@ export async function montarContadorTerco(container, conjunto) {
     }
   });
 
-  render();
+  // estado inicial: mostra o crucifixo e o título do primeiro passo,
+  // mas NÃO começa a digitar/avançar sozinho até o primeiro toque.
+  renderOverlay();
+  passoNumEl.textContent = `Conta 1 de ${totalContas}`;
+  tituloEl.textContent = sequencia[0].titulo;
+  subtituloEl.textContent = sequencia[0].subtitulo || '';
 }
