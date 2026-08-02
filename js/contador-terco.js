@@ -1,42 +1,37 @@
 import { marcarOracaoDeHoje, getUsuarioAtual } from './supabase-client.js';
 
+/**
+ * Estrutura 1 TOQUE = 1 CONTA FÍSICA, sempre — sem reaproveitar posição.
+ * Um terço real tem 61 elementos tocáveis (59 contas + medalha + crucifixo):
+ * crucifixo(Sinal da Cruz+Credo) → Pai Nosso → 3 Ave Marias → medalha(Glória)
+ * → 5 dezenas de 11 (Pai Nosso+mistério juntos, depois 10 Ave Marias).
+ */
 function construirSequencia(conjunto) {
   const seq = [
-    { titulo: 'Sinal da Cruz', subtitulo: 'Em nome do Pai, do Filho e do Espírito Santo.' },
-    { titulo: 'Credo', subtitulo: 'Creio em Deus Pai todo-poderoso...' },
+    { titulo: 'Sinal da Cruz + Credo', subtitulo: 'Em nome do Pai, do Filho e do Espírito Santo. Creio em Deus Pai todo-poderoso...' },
     { titulo: 'Pai Nosso', subtitulo: '' },
     { titulo: '3 Ave Marias', subtitulo: 'pela Fé, Esperança e Caridade', avesTotal: 3 },
-    { titulo: 'Glória ao Pai', subtitulo: '' },
+    { titulo: 'Glória ao Pai', subtitulo: 'Aqui começa a alça do terço.' },
   ];
   conjunto.misterios.forEach((m, i) => {
-    seq.push({ titulo: m.titulo, subtitulo: m.contemplacao, mistero: true });
-    seq.push({ titulo: 'Pai Nosso', subtitulo: `${i + 1}ª dezena` });
-    seq.push({ titulo: '10 Ave Marias', subtitulo: m.titulo, avesTotal: 10 });
-    seq.push({ titulo: 'Glória ao Pai', subtitulo: '' });
+    seq.push({ titulo: `Pai Nosso — ${m.titulo}`, subtitulo: m.contemplacao });
+    seq.push({ titulo: '10 Ave Marias', subtitulo: `${m.titulo} · ao terminar, reze Glória ao Pai antes da próxima dezena`, avesTotal: 10 });
   });
-  seq.push({ titulo: 'Salve Rainha', subtitulo: '' });
+  seq.push({ titulo: 'Salve Rainha', subtitulo: 'Reze a última Glória ao Pai e a Salve Rainha pra encerrar.' });
   seq.push({ titulo: 'Terço concluído 🙏', subtitulo: 'Que Nossa Senhora interceda por você hoje.', final: true });
   return seq;
 }
 
-/**
- * Mapeia cada um dos 72 "toques" da oração pro NOME da máscara real
- * (layer do PSD). Estrutura física de um terço de 59 contas: crucifixo →
- * 1 grande + 3 pequenas (intro) → medalha (Glória) → 5 dezenas de 11
- * contas (1 grande + 10 pequenas — sem conta própria pra Glória, ela
- * reaproveita a última Ave da dezena).
- */
+/** Nomes das máscaras (layers do PSD) na ordem exata da oração — 61 no total, sem repetição de posição. */
 function gerarSequenciaDeNomes() {
-  const nomes = ['crucifixo', 'crucifixo', 'conta1', 'conta2', 'conta3', 'conta4', 'medalha'];
+  const nomes = ['crucifixo', 'conta1', 'conta2', 'conta3', 'conta4', 'medalha'];
   let n = 5;
   for (let d = 0; d < 5; d++) {
-    nomes.push(`conta${n}`);      // anúncio do mistério (reaproveita a conta do PN)
-    nomes.push(`conta${n}`);      // Pai Nosso da dezena
+    nomes.push(`conta${n}`); // Pai Nosso + mistério, na conta grande
     for (let a = 1; a <= 10; a++) nomes.push(`conta${n + a}`); // 10 Ave Marias
-    nomes.push(`conta${n + 10}`); // Glória (reaproveita a última Ave)
     n += 11;
   }
-  return nomes; // 72 nomes
+  return nomes; // 61 nomes, cada um uma conta física diferente
 }
 
 export async function montarContadorTerco(container, conjunto) {
@@ -78,12 +73,10 @@ export async function montarContadorTerco(container, conjunto) {
   const subtituloEl = container.querySelector('.contador-terco__subtitulo');
   const btnAvancar = container.querySelector('.contador-terco__avancar');
 
-  // monta os 72 divs de máscara uma vez só (reaproveita a mesma imagem de
-  // máscara quando o nome se repete, ex.: crucifixo 2x, conta do meio 2x)
   overlay.innerHTML = nomesContas.map((nome, i) => {
     const p = posicoes[nome];
     if (!p) return '';
-    return `<div class="bead-fx" data-i="${i}" style="left:${p.left}%; top:${p.top}%; width:${p.width}%; height:${p.height}%; -webkit-mask-image:url(../img/mascaras/${nome}.png); mask-image:url(../img/mascaras/${nome}.png);"></div>`;
+    return `<div class="bead-fx" data-i="${i}" data-nome="${nome}" style="left:${p.left}%; top:${p.top}%; width:${p.width}%; height:${p.height}%; -webkit-mask-image:url(../img/mascaras/${nome}.png); mask-image:url(../img/mascaras/${nome}.png);"></div>`;
   }).join('');
   const beadEls = overlay.querySelectorAll('.bead-fx');
 
