@@ -76,8 +76,9 @@ export async function montarContadorTerco(container, conjunto) {
       <div class="contador-terco__cabecalho">
         <p class="contador-terco__passo-num"></p>
         <div class="contador-terco__vozes">
-          <button class="contador-terco__voz ativa" data-voz="ele" type="button">🙋‍♂️ Ele</button>
-          <button class="contador-terco__voz" data-voz="ela" type="button">🙋‍♀️ Ela</button>
+          <span class="contador-terco__vozes-rotulo">🔊 Voz:</span>
+          <button class="contador-terco__voz ativa" data-voz="ele" type="button">Masculina</button>
+          <button class="contador-terco__voz" data-voz="ela" type="button">Feminina</button>
         </div>
         <button class="contador-terco__pausar" type="button">⏸ Pausar</button>
       </div>

@@ -325,7 +325,8 @@ nav{
 .contador-terco__toque-aviso{font-family:'Inter',sans-serif; font-size:.78rem; color:var(--wine); opacity:.75; margin-bottom:14px;}
 
 .contador-terco__cabecalho{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:10px; flex-wrap:wrap;}
-.contador-terco__vozes{display:flex; gap:6px;}
+.contador-terco__vozes{display:flex; gap:6px; align-items:center;}
+.contador-terco__vozes-rotulo{font-family:'Inter',sans-serif; font-size:.72rem; color:var(--wine); opacity:.75; margin-right:2px;}
 .contador-terco__voz{
   font-family:'Inter',sans-serif; font-size:.72rem; font-weight:600;
   background:transparent; border:1px solid rgba(122,46,59,.3); color:var(--wine);
