@@ -5,7 +5,7 @@
  */
 
 // Resolve sempre em relação à localização deste arquivo (js/devocional.js),
-// não à página que o importou — assim funciona em qualquer profundidade de pasta
+// não à página que o importou. Assim funciona em qualquer profundidade de pasta
 // e também num subcaminho de GitHub Pages (ex.: usuario.github.io/repo/).
 const DATA_PATH = new URL('../data/', import.meta.url);
 

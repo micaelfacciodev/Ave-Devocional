@@ -82,6 +82,10 @@ nav{
     0 0 0 8px rgba(201,162,39,.5),
     0 35px 70px -20px rgba(0,0,0,.75);
 }
+.hero-legenda{
+  font-family:'Inter',sans-serif; font-size:.72rem; color:var(--parchment-dim); opacity:.55;
+  text-align:center; margin-top:14px; letter-spacing:.02em; font-style:italic;
+}
 .hero-texto{flex:1 1 340px; max-width:460px;}
 .hero-titulo{font-family:'Cinzel',serif; font-weight:600; font-size:3.2rem; color:var(--gold-bright); line-height:1; margin-bottom:16px;}
 .hero-tagline{

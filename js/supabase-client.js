@@ -16,7 +16,7 @@ export function onAuthChange(callback) {
   });
 }
 
-/** Envia link mágico de login por e-mail (sem senha) — mantido como alternativa */
+/** Envia link mágico de login por e-mail (sem senha), mantido como alternativa */
 export async function entrarComLinkMagico(email) {
   const { error } = await supabase.auth.signInWithOtp({
     email,
@@ -25,7 +25,7 @@ export async function entrarComLinkMagico(email) {
   if (error) throw error;
 }
 
-/** Login com Google — um clique, sem digitar nada */
+/** Login com Google. Um clique, sem digitar nada */
 export async function entrarComGoogle() {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',

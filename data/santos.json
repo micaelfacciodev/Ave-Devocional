@@ -1,5 +1,5 @@
 {
-  "_obs": "Chave = MM-DD. Este arquivo traz apenas Agosto, como amostra, e só com celebrações que eu confirmei no Calendário Romano Geral (solenidades e memórias obrigatórias). Muitos dias têm memórias facultativas de santos locais/regionais que variam por país e não foram incluídas aqui para não arriscar erro. Recomendo validar e completar o ano inteiro com uma fonte litúrgica oficial (ex.: liturgia.cnbb.org.br ou vaticannews.va/pt/santo-do-dia.html) antes de publicar, e depois travar como dado estático — o calendário dos santos não muda de ano a ano.",
+  "_obs": "Chave = MM-DD. Este arquivo traz apenas Agosto, como amostra, e só com celebrações que eu confirmei no Calendário Romano Geral (solenidades e memórias obrigatórias). Muitos dias têm memórias facultativas de santos locais/regionais que variam por país e não foram incluídas aqui para não arriscar erro. Recomendo validar e completar o ano inteiro com uma fonte litúrgica oficial (ex.: liturgia.cnbb.org.br ou vaticannews.va/pt/santo-do-dia.html) antes de publicar, e depois travar como dado estático. O calendário dos santos não muda de ano a ano.",
   "santos": {
     "08-04": {
       "nome": "São João Maria Vianney",

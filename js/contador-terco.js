@@ -15,7 +15,7 @@ function construirSequencia(conjunto, oracoesPorId) {
     { titulo: 'Glória ao Pai', subtitulo: 'Aqui começa a alça do terço.', oracaoTexto: texto('gloria'), audioId: 'gloria' },
   ];
   conjunto.misterios.forEach((m, i) => {
-    seq.push({ titulo: `Pai Nosso — ${m.titulo}`, subtitulo: m.contemplacao, oracaoTexto: texto('pai-nosso'), audioMisterioIndex: i });
+    seq.push({ titulo: `Pai Nosso, ${m.titulo}`, subtitulo: m.contemplacao, oracaoTexto: texto('pai-nosso'), audioMisterioIndex: i });
     seq.push({ titulo: '10 Ave Marias', subtitulo: m.titulo, oracaoTexto: texto('ave-maria'), audioId: 'ave-maria', avesTotal: 10 });
   });
   seq.push({ titulo: 'Salve Rainha', oracaoTexto: texto('salve-rainha'), audioId: 'salve-rainha' });
@@ -72,7 +72,7 @@ export async function montarContadorTerco(container, conjunto) {
         <img src="../img/rosario.webp" class="rosario-foto" alt="Rosário" draggable="false" />
         <div class="rosario-overlay"></div>
       </div>
-      <p class="contador-terco__toque-aviso">👆 Toque pra começar — depois é só acompanhar</p>
+      <p class="contador-terco__toque-aviso">👆 Toque pra começar. Depois é só acompanhar</p>
       <div class="contador-terco__cabecalho">
         <p class="contador-terco__passo-num"></p>
         <div class="contador-terco__vozes">
@@ -180,8 +180,8 @@ export async function montarContadorTerco(container, conjunto) {
     const audioSrc = getAudioSrc(passo);
 
     digitar(passo.oracaoTexto, () => {
-      // só agenda avanço pelo tempo de leitura quando NÃO tem áudio —
-      // com áudio, quem manda avançar é o fim da gravação (evento 'ended')
+      // só agenda avanço pelo tempo de leitura quando NÃO tem áudio.
+      // Com áudio, quem manda avançar é o fim da gravação (evento 'ended').
       if (autoPlayAtivo && !passo.final && !audioSrc) {
         timerAuto = setTimeout(avancar, PAUSA_APOS_TEXTO);
       }
