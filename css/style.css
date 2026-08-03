@@ -305,11 +305,12 @@ nav{
 .contador-terco{
   background:linear-gradient(180deg, var(--parchment) 0%, var(--parchment-dim) 100%);
   color:var(--ink); border-radius:2px; max-width:480px; margin:0 auto 60px;
-  padding:16px 24px 32px; text-align:center; box-shadow:0 30px 60px -20px rgba(0,0,0,.5), 0 0 0 1px rgba(201,162,39,.25);
+  padding:14px 20px 22px; text-align:center; box-shadow:0 30px 60px -20px rgba(0,0,0,.5), 0 0 0 1px rgba(201,162,39,.25);
 }
-.rosario-foto-box{position:relative; max-width:380px; margin:0 auto 6px; cursor:pointer; border-radius:4px; overflow:hidden;}
+.rosario-foto-box{position:relative; max-width:280px; margin:0 auto 4px; cursor:pointer; border-radius:4px; overflow:hidden;}
 .rosario-foto{width:100%; height:auto; display:block; user-select:none; -webkit-user-drag:none;}
 .rosario-overlay{position:absolute; inset:0; width:100%; height:100%;}
+@media (min-width:520px){.rosario-foto-box{max-width:320px;}}
 
 .bead-fx{
   position:absolute; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
@@ -322,36 +323,39 @@ nav{
 @keyframes pulsa-brilho-foto{0%,100%{opacity:.55;}50%{opacity:.95;}}
 @media (prefers-reduced-motion: reduce){.bead-fx.atual{animation:none;}}
 
-.contador-terco__toque-aviso{font-family:'Inter',sans-serif; font-size:.78rem; color:var(--wine); opacity:.75; margin-bottom:14px;}
+.contador-terco__toque-aviso{font-family:'Inter',sans-serif; font-size:.7rem; color:var(--wine); opacity:.7; margin-bottom:8px;}
 
-.contador-terco__cabecalho{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:10px; flex-wrap:wrap;}
-.contador-terco__vozes{display:flex; gap:6px; align-items:center;}
-.contador-terco__vozes-rotulo{font-family:'Inter',sans-serif; font-size:.72rem; color:var(--wine); opacity:.75; margin-right:2px;}
+.contador-terco__cabecalho{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:6px; flex-wrap:wrap;}
+.contador-terco__vozes{display:flex; gap:5px; align-items:center;}
+.contador-terco__vozes-rotulo{font-family:'Inter',sans-serif; font-size:.68rem; color:var(--wine); opacity:.75; margin-right:1px;}
 .contador-terco__voz{
-  font-family:'Inter',sans-serif; font-size:.72rem; font-weight:600;
+  font-family:'Inter',sans-serif; font-size:.68rem; font-weight:600;
   background:transparent; border:1px solid rgba(122,46,59,.3); color:var(--wine);
-  padding:5px 10px; border-radius:12px; cursor:pointer; opacity:.55; transition:opacity .2s, background .2s;
+  padding:3px 8px; border-radius:12px; cursor:pointer; opacity:.55; transition:opacity .2s, background .2s;
 }
 .contador-terco__voz.ativa{opacity:1; background:rgba(122,46,59,.1);}
 .contador-terco__pausar{
-  font-family:'Inter',sans-serif; font-size:.72rem; font-weight:600; letter-spacing:.03em;
+  font-family:'Inter',sans-serif; font-size:.68rem; font-weight:600; letter-spacing:.03em;
   background:transparent; border:1px solid rgba(122,46,59,.3); color:var(--wine);
-  padding:5px 12px; border-radius:12px; cursor:pointer;
+  padding:3px 10px; border-radius:12px; cursor:pointer;
 }
 .contador-terco__pausar:hover{background:rgba(122,46,59,.06);}
 
-.contador-terco__passo-num{font-family:'Inter',sans-serif; font-size:.82rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); opacity:.85; font-weight:600; margin-bottom:0;}
-.contador-terco__titulo{font-family:'Cinzel',serif; font-weight:500; font-size:1.6rem; color:var(--ink); margin-bottom:12px; line-height:1.3;}
-.contador-terco__subtitulo{font-family:'Crimson Pro',serif; font-style:italic; font-size:1.05rem; color:var(--ink-soft); line-height:1.65; margin-bottom:14px; min-height:1.2em;}
+.contador-terco__passo-num{font-family:'Inter',sans-serif; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:var(--gold); opacity:.85; font-weight:600; margin-bottom:0;}
+.contador-terco__titulo{font-family:'Cinzel',serif; font-weight:500; font-size:1.28rem; color:var(--ink); margin-bottom:6px; line-height:1.25;}
+.contador-terco__subtitulo{font-family:'Crimson Pro',serif; font-style:italic; font-size:.92rem; color:var(--ink-soft); line-height:1.5; margin-bottom:8px; min-height:0;}
 
+/* sem "caixinha" visível — sem borda, sem fundo. Só um teto de altura
+   generoso com leve esmaecido no topo, pra caber quase toda oração
+   inteira; só as mais longas (Credo) ganham um scroll interno discreto. */
 .contador-terco__oracao-box{
-  height:4.6em; overflow:hidden; position:relative;
-  margin-bottom:24px; max-width:440px; margin-left:auto; margin-right:auto;
-  -webkit-mask-image:linear-gradient(to bottom, transparent, black 22%, black 100%);
-  mask-image:linear-gradient(to bottom, transparent, black 22%, black 100%);
+  max-height:7.4em; overflow-y:auto; position:relative;
+  margin-bottom:12px; max-width:440px; margin-left:auto; margin-right:auto;
+  -webkit-mask-image:linear-gradient(to bottom, transparent, black 8%, black 100%);
+  mask-image:linear-gradient(to bottom, transparent, black 8%, black 100%);
 }
 .contador-terco__oracao{
-  font-family:'Crimson Pro',serif; font-size:1.12rem; color:var(--ink); line-height:1.75;
+  font-family:'Crimson Pro',serif; font-size:.98rem; color:var(--ink); line-height:1.55;
   text-align:left; margin:0;
 }
 .contador-terco__oracao.digitando::after{
@@ -361,7 +365,8 @@ nav{
 @keyframes pisca-cursor{0%,49%{opacity:.7;}50%,100%{opacity:0;}}
 @media (prefers-reduced-motion: reduce){.contador-terco__oracao.digitando::after{animation:none; opacity:.7;}}
 
-.contador-terco__avancar{min-width:260px; padding:16px 28px; font-size:.95rem;}
+.contador-terco__avancar{min-width:220px; padding:12px 22px; font-size:.88rem;}
+
 
 .guia-terco{
   max-width:480px; margin:0 auto; background:rgba(255,255,255,.03); border:1px solid rgba(201,162,39,.2);
