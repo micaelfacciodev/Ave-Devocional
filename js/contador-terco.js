@@ -34,8 +34,8 @@ function gerarSequenciaDeNomes() {
   return nomes; // 61 nomes
 }
 
-const MS_POR_PALAVRA = 480;    // ritmo mais pausado, contemplativo (usado quando não há áudio gravado)
-const PAUSA_APOS_TEXTO = 1800; // respiro antes de avançar sozinho (sem áudio)
+const MS_POR_PALAVRA = 700;    // ritmo bem pausado, de quem reza devagar (usado quando não há áudio gravado)
+const PAUSA_APOS_TEXTO = 3200; // respiro maior antes de avançar sozinho (sem áudio)
 
 export async function montarContadorTerco(container, conjunto) {
   const [respMascaras, respOracoes] = await Promise.all([
