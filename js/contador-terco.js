@@ -103,7 +103,7 @@ export async function montarContadorTerco(container, conjunto) {
   const audioEl = new Audio();
   audioEl.preload = 'auto';
   audioEl.addEventListener('ended', () => {
-    if (autoPlayAtivo && comecou && !sequencia[passoAtual].final) avancar();
+    if (comecou && !sequencia[passoAtual].final) avancarAutomatico();
   });
 
   overlay.innerHTML = nomesContas.map((nome, i) => {
@@ -147,20 +147,18 @@ export async function montarContadorTerco(container, conjunto) {
   // em vez de crescer e empurrar o resto da página pra cima.
   function digitar(texto, aoTerminar) {
     oracaoEl.textContent = '';
-    oracaoEl.classList.add('digitando');
-    if (!texto) { oracaoEl.classList.remove('digitando'); if (aoTerminar) aoTerminar(); return; }
+    if (!texto) { if (aoTerminar) aoTerminar(); return; }
     const palavras = texto.split(' ');
     let i = 0;
     intervalDigitando = setInterval(() => {
       if (i >= palavras.length) {
         clearInterval(intervalDigitando);
         intervalDigitando = null;
-        oracaoEl.classList.remove('digitando');
         if (aoTerminar) aoTerminar();
         return;
       }
       oracaoEl.textContent += (i === 0 ? '' : ' ') + palavras[i];
-      oracaoBox.scrollTop = oracaoBox.scrollHeight; // rola pra baixo, caixa não cresce
+      oracaoBox.scrollTop = oracaoBox.scrollHeight; // rola pra baixo, sempre mostrando as últimas linhas
       i++;
     }, MS_POR_PALAVRA);
   }
@@ -183,8 +181,8 @@ export async function montarContadorTerco(container, conjunto) {
     digitar(passo.oracaoTexto, () => {
       // só agenda avanço pelo tempo de leitura quando NÃO tem áudio.
       // Com áudio, quem manda avançar é o fim da gravação (evento 'ended').
-      if (autoPlayAtivo && !passo.final && !audioSrc) {
-        timerAuto = setTimeout(avancar, PAUSA_APOS_TEXTO);
+      if (!passo.final && !audioSrc) {
+        timerAuto = setTimeout(avancarAutomatico, PAUSA_APOS_TEXTO);
       }
     });
 
@@ -193,6 +191,13 @@ export async function montarContadorTerco(container, conjunto) {
       audioEl.currentTime = 0;
       audioEl.play().catch(() => { /* autoplay pode ser bloqueado até 1º toque do usuário */ });
     }
+  }
+
+  function avancarAutomatico() {
+    // dupla trava: só avança sozinho se o autoplay ainda estiver ativo
+    // NO MOMENTO exato em que o timer ou o áudio dispara, não só quando foi agendado.
+    if (!autoPlayAtivo) return;
+    avancar();
   }
 
   async function avancar() {
@@ -248,7 +253,7 @@ export async function montarContadorTerco(container, conjunto) {
       if (audioSrc && audioEl.src && !audioEl.ended) {
         audioEl.play().catch(() => {});
       } else if (!audioSrc && !intervalDigitando) {
-        timerAuto = setTimeout(avancar, PAUSA_APOS_TEXTO);
+        timerAuto = setTimeout(avancarAutomatico, PAUSA_APOS_TEXTO);
       }
     }
   });
