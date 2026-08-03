@@ -341,6 +341,14 @@ nav{
 }
 .contador-terco__pausar:hover{background:rgba(122,46,59,.06);}
 
+.contador-terco__vel-btn{
+  font-family:'Inter',sans-serif; font-size:.68rem; font-weight:600; letter-spacing:.02em;
+  background:transparent; border:1px solid rgba(122,46,59,.3); color:var(--wine);
+  padding:3px 10px; border-radius:12px; cursor:pointer; opacity:.75; transition:opacity .2s, background .2s;
+}
+.contador-terco__vel-btn:hover:not(:disabled){opacity:1; background:rgba(122,46,59,.06);}
+.contador-terco__vel-btn:disabled{opacity:.25; cursor:not-allowed;}
+
 .contador-terco__passo-num{font-family:'Inter',sans-serif; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:var(--gold); opacity:.85; font-weight:600; margin-bottom:0;}
 .contador-terco__titulo{font-family:'Cinzel',serif; font-weight:500; font-size:1.28rem; color:var(--ink); margin-bottom:6px; line-height:1.25;}
 .contador-terco__subtitulo{font-family:'Crimson Pro',serif; font-style:italic; font-size:.92rem; color:var(--ink-soft); line-height:1.5; margin-bottom:8px; min-height:0;}

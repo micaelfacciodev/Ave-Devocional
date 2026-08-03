@@ -34,8 +34,14 @@ function gerarSequenciaDeNomes() {
   return nomes; // 61 nomes
 }
 
-const MS_POR_PALAVRA = 700;    // ritmo bem pausado, de quem reza devagar (usado quando não há áudio gravado)
-const PAUSA_APOS_TEXTO = 3200; // respiro maior antes de avançar sozinho (sem áudio)
+const NIVEIS_VELOCIDADE = [
+  { ms: 1000, pausa: 4500, label: 'Bem devagar' },
+  { ms: 700, pausa: 3200, label: 'Devagar' },
+  { ms: 500, pausa: 2200, label: 'Normal' },
+  { ms: 350, pausa: 1400, label: 'Rápido' },
+  { ms: 220, pausa: 900, label: 'Bem rápido' },
+];
+const CHAVE_VELOCIDADE = 'ave-velocidade-terco';
 
 export async function montarContadorTerco(container, conjunto) {
   const [respMascaras, respOracoes] = await Promise.all([
@@ -57,6 +63,11 @@ export async function montarContadorTerco(container, conjunto) {
   let vozAtual = 'ele';
   let timerAuto = null;
   let intervalDigitando = null;
+  let indiceVelocidade = 1; // padrão: Devagar
+  {
+    const salvo = parseInt(localStorage.getItem(CHAVE_VELOCIDADE), 10);
+    if (!isNaN(salvo) && salvo >= 0 && salvo < NIVEIS_VELOCIDADE.length) indiceVelocidade = salvo;
+  }
 
   const offsets = [];
   let acc = 0;
@@ -80,7 +91,9 @@ export async function montarContadorTerco(container, conjunto) {
           <button class="contador-terco__voz ativa" data-voz="ele" type="button">Masculina</button>
           <button class="contador-terco__voz" data-voz="ela" type="button">Feminina</button>
         </div>
+        <button class="contador-terco__vel-btn" data-acao="devagar" type="button" title="Mais devagar">🐢 Mais devagar</button>
         <button class="contador-terco__pausar" type="button">⏸ Pausar</button>
+        <button class="contador-terco__vel-btn" data-acao="rapido" type="button" title="Mais rápido">Mais rápido 🐇</button>
       </div>
       <h3 class="contador-terco__titulo"></h3>
       <p class="contador-terco__subtitulo"></p>
@@ -98,6 +111,8 @@ export async function montarContadorTerco(container, conjunto) {
   const oracaoEl = container.querySelector('.contador-terco__oracao');
   const btnAvancar = container.querySelector('.contador-terco__avancar');
   const btnPausar = container.querySelector('.contador-terco__pausar');
+  const btnVelDevagar = container.querySelector('[data-acao="devagar"]');
+  const btnVelRapido = container.querySelector('[data-acao="rapido"]');
   const botoesVoz = container.querySelectorAll('.contador-terco__voz');
 
   const audioEl = new Audio();
@@ -160,7 +175,7 @@ export async function montarContadorTerco(container, conjunto) {
       oracaoEl.textContent += (i === 0 ? '' : ' ') + palavras[i];
       oracaoBox.scrollTop = oracaoBox.scrollHeight; // rola pra baixo, sempre mostrando as últimas linhas
       i++;
-    }, MS_POR_PALAVRA);
+    }, NIVEIS_VELOCIDADE[indiceVelocidade].ms);
   }
 
   function render() {
@@ -182,7 +197,7 @@ export async function montarContadorTerco(container, conjunto) {
       // só agenda avanço pelo tempo de leitura quando NÃO tem áudio.
       // Com áudio, quem manda avançar é o fim da gravação (evento 'ended').
       if (!passo.final && !audioSrc) {
-        timerAuto = setTimeout(avancarAutomatico, PAUSA_APOS_TEXTO);
+        timerAuto = setTimeout(avancarAutomatico, NIVEIS_VELOCIDADE[indiceVelocidade].pausa);
       }
     });
 
@@ -253,8 +268,29 @@ export async function montarContadorTerco(container, conjunto) {
       if (audioSrc && audioEl.src && !audioEl.ended) {
         audioEl.play().catch(() => {});
       } else if (!audioSrc && !intervalDigitando) {
-        timerAuto = setTimeout(avancarAutomatico, PAUSA_APOS_TEXTO);
+        timerAuto = setTimeout(avancarAutomatico, NIVEIS_VELOCIDADE[indiceVelocidade].pausa);
       }
+    }
+  });
+
+  function atualizarBotoesVelocidade() {
+    btnVelDevagar.disabled = indiceVelocidade === 0;
+    btnVelRapido.disabled = indiceVelocidade === NIVEIS_VELOCIDADE.length - 1;
+  }
+  atualizarBotoesVelocidade();
+
+  btnVelDevagar.addEventListener('click', () => {
+    if (indiceVelocidade > 0) {
+      indiceVelocidade--;
+      localStorage.setItem(CHAVE_VELOCIDADE, String(indiceVelocidade));
+      atualizarBotoesVelocidade();
+    }
+  });
+  btnVelRapido.addEventListener('click', () => {
+    if (indiceVelocidade < NIVEIS_VELOCIDADE.length - 1) {
+      indiceVelocidade++;
+      localStorage.setItem(CHAVE_VELOCIDADE, String(indiceVelocidade));
+      atualizarBotoesVelocidade();
     }
   });
 
