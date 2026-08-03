@@ -2,6 +2,13 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<script>
+  (function(){
+    var t = localStorage.getItem('ave-tamanho-fonte');
+    if (t === 'medio' || t === 'grande') document.documentElement.classList.add('fonte-' + t);
+  })();
+</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Títulos de Nossa Senhora, Ave</title>
 <meta name="description" content="Os principais títulos marianos, sua origem e data de festa.">
@@ -25,7 +32,10 @@
     <a href="../santos/">Santos</a>
     <a href="../oracoes/">Orações</a>
   </div>
-  <div id="auth-widget"></div>
+  <div class="nav-direita">
+    <div id="tamanho-fonte-widget"></div>
+    <div id="auth-widget"></div>
+  </div>
 </nav>
 
 <main class="wrap">
@@ -68,6 +78,11 @@
 <script type="module">
   import { montarAuthWidget } from '../js/auth-widget.js';
   montarAuthWidget(document.getElementById('auth-widget'));
+</script>
+
+<script type="module">
+  import { montarTamanhoFonte } from '../js/tamanho-fonte.js';
+  montarTamanhoFonte(document.getElementById('tamanho-fonte-widget'));
 </script>
 
 </body>
