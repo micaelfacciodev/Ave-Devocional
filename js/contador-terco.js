@@ -85,15 +85,19 @@ export async function montarContadorTerco(container, conjunto) {
       </div>
       <p class="contador-terco__toque-aviso">Toque pra começar. Depois é só acompanhar</p>
       <div class="contador-terco__cabecalho">
-        <p class="contador-terco__passo-num"></p>
-        <div class="contador-terco__vozes">
-          <span class="contador-terco__vozes-rotulo">Voz:</span>
-          <button class="contador-terco__voz ativa" data-voz="ele" type="button">Masculina</button>
-          <button class="contador-terco__voz" data-voz="ela" type="button">Feminina</button>
+        <div class="contador-terco__linha1">
+          <p class="contador-terco__passo-num"></p>
+          <div class="contador-terco__vozes">
+            <span class="contador-terco__vozes-rotulo">Voz:</span>
+            <button class="contador-terco__voz ativa" data-voz="ele" type="button">Masculina</button>
+            <button class="contador-terco__voz" data-voz="ela" type="button">Feminina</button>
+          </div>
         </div>
-        <button class="contador-terco__vel-btn" data-acao="devagar" type="button" title="Mais devagar">Mais devagar</button>
-        <button class="contador-terco__pausar" type="button">Pausar</button>
-        <button class="contador-terco__vel-btn" data-acao="rapido" type="button" title="Mais rápido">Mais rápido</button>
+        <div class="contador-terco__linha2">
+          <button class="contador-terco__vel-btn" data-acao="devagar" type="button" title="Mais devagar">Mais devagar</button>
+          <button class="contador-terco__pausar" type="button">Pausar</button>
+          <button class="contador-terco__vel-btn" data-acao="rapido" type="button" title="Mais rápido">Mais rápido</button>
+        </div>
       </div>
       <h3 class="contador-terco__titulo"></h3>
       <p class="contador-terco__subtitulo"></p>
