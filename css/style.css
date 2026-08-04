@@ -25,10 +25,11 @@ body{
 }
 
 .stars{
-  display:none;
-  /* desativado: gradientes radiais de 1-2px causavam preenchimento cinza
-     no Safari em vez de pontinhos transparentes. Reativar só com técnica
-     mais segura (ex.: imagem estática de pontos) se quiser o efeito de volta. */
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:url("../img/estrelas.svg");
+  background-repeat:repeat;
+  opacity:.55;
+  animation:twinkle 6s ease-in-out infinite alternate;
 }
 @keyframes twinkle{from{opacity:.35}to{opacity:.65}}
 
