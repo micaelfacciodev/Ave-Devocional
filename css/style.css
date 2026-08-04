@@ -13,15 +13,11 @@
   --star:#f4e8bd;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth; background-color:#16254a;}
 html.fonte-medio{font-size:112.5%;}
 html.fonte-grande{font-size:125%;}
 body{
-  background-color:var(--night-deep);
-  background-image:
-    radial-gradient(ellipse 160% 60% at 50% -10%, var(--night-edge) 0%, var(--night-mid) 45%, var(--night-deep) 100%);
-  background-size:cover;
-  background-repeat:no-repeat;
+  background-color:var(--night-mid);
   color:var(--parchment);
   font-family:'Crimson Pro', serif;
   min-height:100vh;
