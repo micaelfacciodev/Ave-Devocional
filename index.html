@@ -72,7 +72,7 @@
     <p class="mystery-body">...</p>
     <div class="mystery-cta">
       <a class="btn btn-primary" href="terco/#contador-terco-container">Rezar o terço completo</a>
-      <button class="btn btn-ghost" id="btn-marcar-oracao">Marquei que rezei hoje 🙏</button>
+      <button class="btn btn-ghost" id="btn-marcar-oracao">Marquei que rezei hoje</button>
     </div>
     <p id="streak-info" style="text-align:center; font-family:'Inter',sans-serif; font-size:.78rem; color:var(--ink-soft); opacity:.75; margin-top:14px;"></p>
   </div>
@@ -198,7 +198,7 @@
       const streak = await getStreakAtual();
       const hoje = new Date().toISOString().slice(0, 10);
       if (streak?.ultimo_dia_rezado === hoje) {
-        streakInfo.textContent = `Você já rezou hoje 🔥 ${streak.dias_seguidos} dia(s) seguidos.`;
+        streakInfo.textContent = `Você já rezou hoje. ${streak.dias_seguidos} dia(s) seguidos consecutivos.`;
       } else if (streak) {
         streakInfo.textContent = `Sua sequência: ${streak.dias_seguidos} dia(s). Marque hoje pra continuar!`;
       } else {
@@ -215,7 +215,7 @@
       }
       try {
         const dias = await marcarOracaoDeHoje();
-        streakInfo.textContent = `Registrado! 🔥 ${dias} dia(s) seguidos.`;
+        streakInfo.textContent = `Registrado. ${dias} dia(s) seguidos consecutivos.`;
       } catch (e) {
         console.error(e);
       }

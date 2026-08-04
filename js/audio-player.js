@@ -19,7 +19,7 @@ export function montarPlayer(container, { audio_ele = null, audio_ela = null } =
   const temEla = !!audio_ela;
 
   if (!temEle && !temEla) {
-    container.innerHTML = `<div class="audio-player audio-player--em-breve">🎙️ Áudio guiado em breve</div>`;
+    container.innerHTML = `<div class="audio-player audio-player--em-breve">Áudio guiado em breve</div>`;
     return;
   }
 

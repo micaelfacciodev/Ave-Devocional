@@ -19,7 +19,7 @@ function construirSequencia(conjunto, oracoesPorId) {
     seq.push({ titulo: '10 Ave Marias', subtitulo: m.titulo, oracaoTexto: texto('ave-maria'), audioId: 'ave-maria', avesTotal: 10 });
   });
   seq.push({ titulo: 'Salve Rainha', oracaoTexto: texto('salve-rainha'), audioId: 'salve-rainha' });
-  seq.push({ titulo: 'Terço concluído 🙏', subtitulo: 'Que Nossa Senhora interceda por você hoje.', final: true });
+  seq.push({ titulo: 'Terço concluído', subtitulo: 'Que Nossa Senhora interceda por você hoje.', final: true });
   return seq;
 }
 
@@ -83,17 +83,17 @@ export async function montarContadorTerco(container, conjunto) {
         <img src="../img/rosario.webp" class="rosario-foto" alt="Rosário" draggable="false" />
         <div class="rosario-overlay"></div>
       </div>
-      <p class="contador-terco__toque-aviso">👆 Toque pra começar. Depois é só acompanhar</p>
+      <p class="contador-terco__toque-aviso">Toque pra começar. Depois é só acompanhar</p>
       <div class="contador-terco__cabecalho">
         <p class="contador-terco__passo-num"></p>
         <div class="contador-terco__vozes">
-          <span class="contador-terco__vozes-rotulo">🔊 Voz:</span>
+          <span class="contador-terco__vozes-rotulo">Voz:</span>
           <button class="contador-terco__voz ativa" data-voz="ele" type="button">Masculina</button>
           <button class="contador-terco__voz" data-voz="ela" type="button">Feminina</button>
         </div>
-        <button class="contador-terco__vel-btn" data-acao="devagar" type="button" title="Mais devagar">🐢 Mais devagar</button>
-        <button class="contador-terco__pausar" type="button">⏸ Pausar</button>
-        <button class="contador-terco__vel-btn" data-acao="rapido" type="button" title="Mais rápido">Mais rápido 🐇</button>
+        <button class="contador-terco__vel-btn" data-acao="devagar" type="button" title="Mais devagar">Mais devagar</button>
+        <button class="contador-terco__pausar" type="button">Pausar</button>
+        <button class="contador-terco__vel-btn" data-acao="rapido" type="button" title="Mais rápido">Mais rápido</button>
       </div>
       <h3 class="contador-terco__titulo"></h3>
       <p class="contador-terco__subtitulo"></p>
@@ -235,7 +235,7 @@ export async function montarContadorTerco(container, conjunto) {
       if (usuario) {
         try {
           const dias = await marcarOracaoDeHoje();
-          subtituloEl.textContent = `Que Nossa Senhora interceda por você hoje. 🔥 ${dias} dia(s) seguidos.`;
+          subtituloEl.textContent = `Que Nossa Senhora interceda por você hoje. ${dias} dia(s) seguidos consecutivos.`;
         } catch (e) { /* silencioso */ }
       }
       btnAvancar.hidden = true;
@@ -259,7 +259,7 @@ export async function montarContadorTerco(container, conjunto) {
 
   btnPausar.addEventListener('click', () => {
     autoPlayAtivo = !autoPlayAtivo;
-    btnPausar.textContent = autoPlayAtivo ? '⏸ Pausar' : '▶ Continuar sozinho';
+    btnPausar.textContent = autoPlayAtivo ? 'Pausar' : 'Continuar sozinho';
     if (!autoPlayAtivo) {
       if (timerAuto) { clearTimeout(timerAuto); timerAuto = null; }
       audioEl.pause();
